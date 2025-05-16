@@ -1,0 +1,35 @@
+body {
+    padding-left: 20px; /* Отстояние от лявата страна */
+    background-image: url('/static/images/navbar-bg.jpeg');
+    background-size: cover;         /* Картинката да покрие цялото пространство */
+    background-position: center;    /* Центриране на картинката */
+    background-repeat: no-repeat;   /* Да не се повтаря */
+    min-height: 100vh;              /* Минимална височина = височината на прозореца */
+    margin: 0;                      /* Премахване на външни отстояния */
+    font-family: Arial, sans-serif; /* По избор: задава шрифт */
+}
+
+/* Навигацията може да е със прозрачен или полупрозрачен фон за четливост */
+nav {
+    background-color: rgba(52, 94, 136, 0.7);  /* Полупрозрачен тъмносин фон */
+    padding: 15px 20px;
+    color: white;
+    font-weight: bold;
+}
+nav a {
+    color: white;
+    text-decoration: none;
+    margin: 0 8px;
+}
+nav a:hover {
+    text-decoration: underline;
+}
+nav span {
+    margin-left: 15px;
+    font-style: italic;
+}
+
+.left-content {
+    text-align: left;
+    margin-top: 20px; /* или друг отстъп */
+}

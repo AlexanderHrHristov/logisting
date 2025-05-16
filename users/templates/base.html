@@ -1,0 +1,31 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+    <meta charset="UTF-8" />
+    <title>{% block title %}Logisting{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+    <nav>
+    <body>
+
+
+        <a href="{% url 'home' %}">Начало</a> |
+        <a href="{% url 'about' %}">За нас</a> |
+
+        {% if user.is_authenticated %}
+            <a href="{% url 'dashboard' %}">Табло</a> |
+            <a href="{% url 'logout' %}">Изход</a>
+            <span>Здравей, {{ user.username }}!</span>
+        {% else %}
+            <a href="{% url 'login' %}">Вход</a> |
+            <a href="{% url 'register' %}">Регистрация</a>
+        {% endif %}
+    </nav>
+
+    <hr>
+
+    {% block content %}{% endblock %}
+</body>
+</html>
