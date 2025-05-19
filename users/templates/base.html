@@ -7,16 +7,31 @@
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
 </head>
 <body>
-    <nav>
-    <body>
+<nav>
+    <a href="{% url 'home' %}">Начало</a> |
+    <a href="{% url 'about' %}">За нас</a> |
 
+    {% if user.is_authenticated %}
+        <a href="{% url 'dashboard' %}">Табло</a> |
 
-        <a href="{% url 'home' %}">Начало</a> |
-        <a href="{% url 'about' %}">За нас</a> |
+        <!-- Новите линкове, видими само за регистрирани -->
+        <a href="{% url 'logistics_contacts' %}">Логистика</a> |
+        <a href="{% url 'drivers' %}">Шофьори</a> |
+        <a href="{% url 'warehouses' %}">Складове</a> |
 
-        {% if user.is_authenticated %}
-            <a href="{% url 'dashboard' %}">Табло</a> |
-            <a href="{% url 'logout' %}">Изход</a>
+        <form method="post" action="{% url 'logout' %}" style="display:inline;">
+            {% csrf_token %}
+            <button type="submit" style="
+                background:none; 
+                border:none; 
+                color:white; 
+                cursor:pointer; 
+                padding:0;
+                font-weight: 700;">
+                Изход
+            </button>
+        </form>
+
             <span>Здравей, {{ user.username }}!</span>
         {% else %}
             <a href="{% url 'login' %}">Вход</a> |

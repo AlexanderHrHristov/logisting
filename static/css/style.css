@@ -16,19 +16,37 @@ nav {
     color: white;
     font-weight: bold;
 }
+
 nav a {
     color: white;
     text-decoration: none;
     margin: 0 8px;
+    font-weight: bold;
 }
+
 nav a:hover {
     text-decoration: underline;
 }
+
 nav span {
     margin-left: 15px;
     font-style: italic;
 }
 
+/* Стил за бутона в logout формата, за да изглежда като линк и да е bold */
+nav form button {
+    font-weight: bold !important; /* Задължително дебел шрифт */
+    font-family: inherit;
+    font-size: 1em;
+    color: white;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    text-decoration: none;
+}
+
+/* Други */
 .left-content {
     text-align: left;
     margin-top: 20px; /* или друг отстъп */
