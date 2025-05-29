@@ -7,10 +7,10 @@ class RegistrationForm(UserCreationForm):
         required=True,
         label='Имейл',
         widget=forms.EmailInput(attrs={
-            'placeholder': 'example@example.com',
+            'placeholder': 'example@stingpharma.com',
             'class': 'form-control',
         }),
-        help_text='Задължително поле.',
+        help_text='Задължително поле. Използвайте фирмен имейл с домейн @stingpharma.com.',
     )
 
     class Meta:
@@ -23,11 +23,13 @@ class RegistrationForm(UserCreationForm):
             }),
         }
         help_texts = {
-            'username': 'Задължително. До 150 символа. Само букви, цифри и @/./+/-/_',
+            'username': 'Задължително. До 50 символа. Само букви, цифри и @/./+/-/_',
         }
 
     def clean_email(self):
         email = self.cleaned_data.get('email')
+        if not email.endswith('@stingpharma.com'):
+            raise forms.ValidationError("Регистрацията е разрешена само с имейл от домейн @stingpharma.com.")
         if AppUser.objects.filter(email=email).exists():
             raise forms.ValidationError("Този имейл вече се използва.")
         return email

@@ -1,8 +1,9 @@
 body {
     padding-left: 20px; /* Отстояние от лявата страна */
+    padding-right: 20px; /* Отстояние от дясната страна */
     background-image: url('/static/images/navbar-bg.jpeg');
     background-size: cover;         /* Картинката да покрие цялото пространство */
-    background-position: center;    /* Центриране на картинката */
+    background-position: left;    /* Центриране на картинката */
     background-repeat: no-repeat;   /* Да не се повтаря */
     min-height: 100vh;              /* Минимална височина = височината на прозореца */
     margin: 0;                      /* Премахване на външни отстояния */
@@ -49,5 +50,15 @@ nav form button {
 /* Други */
 .left-content {
     text-align: left;
-    margin-top: 20px; /* или друг отстъп */
+    margin-top: 20px;
+    color: white; /* <-- това добави */
+}
+
+.bg-dark {
+    background-color: #1a1a1a; /* тъмен фон */
+    color: white !important;   /* бял текст, с !important, за да няма override */
+}
+
+p {
+    font-size: 18px; /* можеш да промениш 18px на желан размер */
 }
