@@ -5,6 +5,8 @@ from .forms import LoginForm
 from django.http import HttpResponse    
 from .forms import RegistrationForm
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
+
 
 
 def home_view(request):
@@ -33,12 +35,13 @@ def register_view(request):
     if request.method == 'POST':
         form = RegistrationForm(request.POST)
         if form.is_valid():
-            user = form.save()
-            auth_login(request, user)
-            return redirect('home')
+            user = form.save(commit=False)
+            user.is_active = False  # 👈 акаунтът е неактивен
+            user.save()
+            messages.success(request, "Вашата регистрация е приета. След одобрение от администратор ще получите достъп.")
+            return redirect('login')
     else:
         form = RegistrationForm()
-
     return render(request, 'users/register.html', {'form': form})
 
 
