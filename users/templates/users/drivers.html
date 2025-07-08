@@ -1,7 +1,26 @@
 {% extends 'base.html' %}
 {% block title %}Шофьори{% endblock %}
-
 {% block content %}
-<h1>Списък на шофьорите</h1>
-<p>Тук ще се показват данни за шофьори.</p>
+<h2>Шофьори</h2>
+
+<table style="width: 100%; border-collapse: collapse; text-align: left;">
+    <thead>
+        <tr style="background-color: #333; color: white;">
+            <th style="padding: 10px; border: 1px solid #ccc;">Име</th>
+            <th style="padding: 10px; border: 1px solid #ccc;">Телефон</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for driver in drivers %}
+        <tr>
+            <td style="padding: 10px; border: 1px solid #ccc;">{{ driver.get_full_name }}</td>
+            <td style="width: 200px; padding: 10px; border: 1px solid #ccc;">{{ driver.phone }}</td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="2" style="padding: 10px; border: 1px solid #ccc;">Няма регистрирани шофьори.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
 {% endblock %}

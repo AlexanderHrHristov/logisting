@@ -6,11 +6,18 @@ from django.http import HttpResponse
 from .forms import RegistrationForm
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-
+from django.views.generic import ListView
+from django.contrib.auth.mixins import LoginRequiredMixin
+from users.models import AppUser
+from django.views.generic import TemplateView
 
 
 def home_view(request):
-    return HttpResponse("<h1>Добре дошъл в сайта!</h1><p>Това е началната страница.</p>")
+    return render(request, 'users/home.html')
+
+# def home_view(request):
+#     return HttpResponse("<h1>Добре дошъл в сайта!</h1><p>Това е началната страница.</p>")
+
 
 def login_view(request):
     if request.method == 'POST':
@@ -45,8 +52,7 @@ def register_view(request):
     return render(request, 'users/register.html', {'form': form})
 
 
-def home_view(request):
-    return render(request, 'users/home.html')
+
 
 
 def about_view(request):
@@ -71,3 +77,16 @@ def drivers_view(request):
 def warehouses_view(request):
     # Зареди данните за складове
     return render(request, 'users/warehouses.html')
+
+@login_required
+def dealers_view(request):
+    return render(request, template_name='users/dealers.html')
+
+@login_required
+class DriversView(LoginRequiredMixin, TemplateView):
+    template_name = 'users/drivers.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['drivers'] = AppUser.objects.filter(is_driver=True)
+        return context
