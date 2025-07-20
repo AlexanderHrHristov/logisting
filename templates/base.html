@@ -12,9 +12,9 @@
     <a href="{% url 'about' %}">За нас</a> |
 
     {% if user.is_authenticated %}
-        <a href="{% url 'dashboard' %}">Табло</a> |
+        <a href="{% url 'dashboard' %}">Входящи доставки</a> |
 
-        <a href="{% url 'logistics_contacts' %}">Логистика</a> |
+        <a href="{% url 'external_warehouses' %}">Външни складове</a> |
         <a href="{% url 'drivers' %}">Шофьори</a> |
         <a href="{% url 'warehouses' %}">Складове</a> |
         <a href="{% url 'dealers' %}">Дилъри</a> |

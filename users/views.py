@@ -64,9 +64,9 @@ def dashboard_view(request):
     return render(request, 'users/dashboard.html')
 
 @login_required
-def logistics_contacts_view(request):
-    # Зареди данните за логистика - примерно от модел или статично
-    return render(request, 'users/logistics_contacts.html')
+def external_warehouses_view(request):
+    # Зареди данните за складове от които ние вземаме стока
+    return render(request, 'users/../schedules/external_warehouses.html')
 
 @login_required
 def drivers_view(request):

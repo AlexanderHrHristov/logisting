@@ -1,5 +1,4 @@
 from django.contrib import admin
-from .models import OnSiteDelivery, PickupDelivery
+from .models import ExternalWarehouse
 
-admin.site.register(OnSiteDelivery)
-admin.site.register(PickupDelivery)
+admin.site.register(ExternalWarehouse)
