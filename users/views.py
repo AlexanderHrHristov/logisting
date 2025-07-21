@@ -79,8 +79,8 @@ def warehouses_view(request):
     return render(request, 'users/warehouses.html')
 
 @login_required
-def dealers_view(request):
-    return render(request, template_name='users/dealers.html')
+def suppliers(request):
+    return render(request, template_name='suppliers_app/supplier_list.html')
 
 @login_required
 class DriversView(LoginRequiredMixin, TemplateView):

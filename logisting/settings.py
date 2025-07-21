@@ -32,7 +32,7 @@ ALLOWED_HOSTS = []
 
 MY_APPS = [
     'users.apps.UsersConfig',
-    'schedules',
+    'suppliers_app',
     
 ]
 

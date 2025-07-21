@@ -12,7 +12,6 @@ class AppUser(AbstractUser):
     is_driver = models.BooleanField(default=False)
     is_transport_manager = models.BooleanField(default=False)
     is_warehouseman = models.BooleanField(default=False)
-    is_dealer = models.BooleanField(default=False)
 
     # Допълнителни данни
     phone = models.CharField(max_length=20, blank=True, null=True, verbose_name="Телефон")

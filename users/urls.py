@@ -13,6 +13,6 @@ urlpatterns = [
     path('external_warehouses/', views.external_warehouses_view, name='external_warehouses'),
     path('drivers/', views.drivers_view, name='drivers'),
     path('warehouses/', views.warehouses_view, name='warehouses'),
-    path('dealers/', views.dealers_view, name='dealers'),
+    path('suppliers/', views.suppliers, name='suppliers'),
 
 ]
