@@ -1,125 +1,69 @@
-from datetime import date, timedelta
-import calendar
-
-from django.shortcuts import render, redirect
-from django.utils.dateparse import parse_date
-from django.contrib.auth.decorators import user_passes_test, login_required
-from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
-
-from .models import ExternalWarehouse, Supplier
-from .forms import ExternalWarehouseForm
-
-
-
-def external_warehouses_view(request):
-    start_date = date.today()
-    end_date = start_date + timedelta(days=365)
-
-    dates = []
-    current = start_date
-    while current <= end_date:
-        weekday = current.weekday()  # 0=пон, ..., 6=нед
-        if weekday not in (5, 6):  # пропускаме събота (5) и неделя (6)
-            day_name = calendar.day_name[weekday]  # на английски: Monday, Tuesday...
-            day_name_bg = {
-                'Monday': 'Понеделник',
-                'Tuesday': 'Вторник',
-                'Wednesday': 'Сряда',
-                'Thursday': 'Четвъртък',
-                'Friday': 'Петък',
-            }.get(day_name, '')
-            dates.append({
-                'date': current.isoformat(),
-                'day_name': day_name_bg,
-            })
-        current += timedelta(days=1)
-
-    selected_date = request.GET.get('date')
-    if not selected_date and dates:
-        selected_date = dates[0]['date']
-
-    selected_date_obj = parse_date(selected_date)
-    records = ExternalWarehouse.objects.filter(date=selected_date_obj) if selected_date_obj else []
-
-    can_add_record = request.user.is_authenticated and (
-        getattr(request.user, 'is_logistic', False) or
-        getattr(request.user, 'is_logistics_manager', False)
-    )
-
-    context = {
-        'dates': dates,
-        'selected_date': selected_date,
-        'records': records,
-    }
-    return render(request, 'schedules/external_warehouses.html', context)
+from django.urls import reverse_lazy
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.shortcuts import get_object_or_404
+from .models import Supplier
+from .forms import SupplierForm
 
 
-def is_logistic_or_manager(user):
-    return user.is_authenticated and (user.is_logistic or user.is_logistics_manager)
+
+# class SupplierListView(LoginRequiredMixin, ListView):
+#     model = Supplier
+#     template_name = 'suppliers_app/supplier_list.html'
+#     context_object_name = 'suppliers'
+
+#     def get_queryset(self):
+#         qs = Supplier.objects.all()
+#         count = qs.count()
+#         print(f"DEBUG Suppliers: Found {count} suppliers")
+#         if count == 0:
+#             print("DEBUG Suppliers: НЯМА ДОСТАВЧИЦИ В QuerySet")
+#         else:
+#             for s in qs:
+#                 print(f"Supplier: {s} (is_active={s.is_active})")
+#         return qs
 
 @login_required
-@user_passes_test(is_logistic_or_manager)
-def add_external_warehouse_view(request):
-    if request.method == 'POST':
-        form = ExternalWarehouseForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('external_warehouses')  # промени с името на url-а ти
+def supplier_list(request):
+    suppliers = Supplier.objects.all()
+    count = suppliers.count()
+    print(f"DEBUG Suppliers: Found {count} suppliers")
+    if count == 0:
+        print("DEBUG Suppliers: НЯМА ДОСТАВЧИЦИ В QuerySet")
     else:
-        form = ExternalWarehouseForm()
+        for s in suppliers:
+            print(f"Supplier: {s} (is_active={s.is_active})")
 
-    return render(request, 'schedules/add_external_warehouse.html', {'form': form})
+    context = {
+        'suppliers': suppliers,
+    }
+    return render(request, 'suppliers_app/supplier_list.html', context)
 
 
 
-class SupplierListView(LoginRequiredMixin, ListView):
+class SupplierCreateView(LoginRequiredMixin, CreateView):
     model = Supplier
-    template_name = 'suppliers_app/supplier_list.html'
-    context_object_name = 'suppliers'
-
-    def get_queryset(self):
-        return Supplier.objects.filter(is_active=True).select_related('responsible_logistic')
+    form_class = SupplierForm
+    template_name = 'suppliers_app/supplier_form.html'
+    success_url = reverse_lazy('suppliers')  # <-- това гарантира redirect след Save
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        user = self.request.user
-        context['can_add_supplier'] = user.is_authenticated and (
-            getattr(user, 'is_logistic', False) or getattr(user, 'is_logistics_manager', False)
-        )
+        context['title'] = 'Добави доставчик'
         return context
 
-
-class SupplierCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
+class SupplierUpdateView(LoginRequiredMixin, UpdateView):
     model = Supplier
-    fields = ['name', 'email', 'phone', 'contact_person', 'delivers_to_us', 'responsible_logistic', 'is_active']
+    form_class = SupplierForm
     template_name = 'suppliers_app/supplier_form.html'
-    success_url = reverse_lazy('supplier-list')
+    success_url = reverse_lazy('suppliers')
 
-    def test_func(self):
-        user = self.request.user
-        return user.is_authenticated and (getattr(user, 'is_logistic', False) or getattr(user, 'is_logistics_manager', False))
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Редактирай доставчик'
+        return context
 
-
-class SupplierUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
-    model = Supplier
-    fields = ['name', 'email', 'phone', 'contact_person', 'delivers_to_us', 'responsible_logistic', 'is_active']
-    template_name = 'suppliers_app/supplier_form.html'
-    success_url = reverse_lazy('supplier-list')
-
-    def test_func(self):
-        user = self.request.user
-        return user.is_authenticated and (getattr(user, 'is_logistic', False) or getattr(user, 'is_logistics_manager', False))
-
-
-
-class SupplierDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+class SupplierDeleteView(LoginRequiredMixin, DeleteView):
     model = Supplier
     template_name = 'suppliers_app/supplier_confirm_delete.html'
-    success_url = reverse_lazy('supplier-list')
-
-    def test_func(self):
-        user = self.request.user
-        return user.is_authenticated and getattr(user, 'is_logistics_manager', False)  # ✅ Безопасно
-
+    success_url = reverse_lazy('suppliers')

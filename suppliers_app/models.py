@@ -19,7 +19,7 @@ class ExternalWarehouse(models.Model):
 
 
 class Supplier(models.Model):
-    DELIVERS_CHOICES = [
+    DELIVERY_CHOICES = [
         ('yes', 'Да'),
         ('no', 'Не'),
     ]
@@ -27,7 +27,7 @@ class Supplier(models.Model):
     email = models.EmailField(max_length=50, unique=True, blank=True, null=True)
     phone = models.CharField(max_length=20, blank=True, null=True, verbose_name="Телефон")
     contact_person = models.CharField(max_length=30, blank=True, null=True)
-    delivers_to_us = models.CharField(choices=DELIVERS_CHOICES, max_length=3, blank=False, null=False)
+    delivers_to_us = models.CharField(choices=DELIVERY_CHOICES, max_length=3, blank=False, null=False)
     responsible_logistic = models.ForeignKey(
         AppUser,
         on_delete=models.SET_NULL,
@@ -43,3 +43,7 @@ class Supplier(models.Model):
             self.responsible_logistic.is_logistics or self.responsible_logistic.is_logistics_manager
         ):
             raise ValidationError("Отговорният логистик трябва да е с роля логистик или логистичен мениджър.")
+    
+    def __str__(self):
+        return self.name if self.name else "Без име"
+        
