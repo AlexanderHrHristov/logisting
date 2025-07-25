@@ -1,14 +1,12 @@
 {% extends 'base.html' %}
-{% block content %}
-<div class="container mt-4">
-    <h2 class="mb-4">{{ view.object.pk|yesno:"Редактиране на доставчик,Добавяне на нов доставчик" }}</h2>
-    <p>Брой доставчици: {{ suppliers|length }}</p>
 
-    <form method="post" class="bg-white p-4 rounded shadow">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit" class="btn btn-success">Запази</button>
-        <a href="{% url 'supplier-list' %}" class="btn btn-secondary">Отказ</a>
-    </form>
-</div>
+{% block content %}
+  <h2>{% if form.instance.pk %}Редактирай доставчик{% else %}Добави нов доставчик{% endif %}</h2>
+
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-success">Запази</button>
+    <a href="{% url 'supplier-list' %}" class="btn btn-secondary">Отказ</a>
+  </form>
 {% endblock %}

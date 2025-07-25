@@ -1,15 +1,12 @@
 {% extends 'base.html' %}
-{% block content %}
-<div class="container mt-4">
-    <div class="bg-white p-4 rounded shadow">
-        <h2>Изтриване на доставчик</h2>
-        <p>Сигурни ли сте, че искате да изтриете доставчика <strong>{{ object.name }}</strong>?</p>
 
-        <form method="post">
-            {% csrf_token %}
-            <button type="submit" class="btn btn-danger">Да, изтрий</button>
-            <a href="{% url 'supplier-list' %}" class="btn btn-secondary">Отказ</a>
-        </form>
-    </div>
-</div>
+{% block content %}
+  <h2>Потвърждение за изтриване</h2>
+  <p>Сигурен ли си, че искаш да изтриеш доставчика "{{ object.name }}"?</p>
+
+  <form method="post">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-danger">Да, изтрий</button>
+    <a href="{% url 'supplier-list' %}" class="btn btn-secondary">Отказ</a>
+  </form>
 {% endblock %}

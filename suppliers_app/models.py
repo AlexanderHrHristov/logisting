@@ -19,15 +19,15 @@ class ExternalWarehouse(models.Model):
 
 
 class Supplier(models.Model):
-    DELIVERS_CHOICES = [
-        ('yes', 'Да'),
-        ('no', 'Не'),
+    DELIVERY_METHOD_CHOICES = [
+        ('delivery', 'Доставка'),
+        ('pickup', 'Ние вземаме'),
     ]
     name = models.CharField(max_length=50, unique=True, blank=True, null=True)
     email = models.EmailField(max_length=50, unique=True, blank=True, null=True)
     phone = models.CharField(max_length=20, blank=True, null=True, verbose_name="Телефон")
     contact_person = models.CharField(max_length=30, blank=True, null=True)
-    delivers_to_us = models.CharField(choices=DELIVERS_CHOICES, max_length=3, blank=False, null=False)
+    delivery_method = models.CharField(max_length=20, choices=DELIVERY_METHOD_CHOICES, default='delivery')
     responsible_logistic = models.ForeignKey(
         AppUser,
         on_delete=models.SET_NULL,
@@ -37,6 +37,7 @@ class Supplier(models.Model):
         related_name='suppliers_responsible'
     )
     is_active = models.BooleanField(default=True)
+
 
     def clean(self):
         if self.responsible_logistic and not (
