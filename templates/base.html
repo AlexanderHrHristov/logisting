@@ -13,6 +13,7 @@
         <a href="{% url 'home' %}">Начало</a> |
         <a href="{% url 'about' %}">За нас</a> |
         <a href="{% url 'contact' %}">Контакти</a> |
+
 {##}
 {#        {% if user.is_authenticated %}#}
 {#            <a href="{% url 'dashboard' %}">Входящи доставки</a> |#}
@@ -43,6 +44,11 @@
 
     <hr>
 
-    {% block content %}{% endblock %}
+<div class="container mt-4">
+    {% block content %}
+    <!-- Съдържанието от дъщерните шаблони ще се вмъкне тук -->
+    {% endblock %}
+</div>
+
     </body>
     </html>

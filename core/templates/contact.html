@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+{% block title %}Контакти{% endblock %}
+
+{% block content %}
+<h1 class="text-white display-7">Свържи се с нас</h1>
+
+{% if messages %}
+  <div>
+    {% for message in messages %}
+      <div class="alert alert-{{ message.tags }}">
+        {{ message }}
+      </div>
+    {% endfor %}
+  </div>
+{% endif %}
+
+<form method="post" novalidate>
+    {% csrf_token %}
+    {{ form.non_field_errors }}
+    <div class="mb-3">
+        <label class="form-label text-white fs-5">{{ form.name.label }}</label>
+        {{ form.name }}
+        {% for error in form.name.errors %}
+            <div class="text-danger">{{ error }}</div>
+        {% endfor %}
+    </div>
+    <div class="mb-3">
+        <label class="form-label text-white fs-5">{{ form.email.label }}</label>
+        {{ form.email }}
+        {% for error in form.email.errors %}
+            <div class="text-danger">{{ error }}</div>
+        {% endfor %}
+    </div>
+    <div class="mb-3">
+        <label class="form-label text-white fs-5">{{ form.message.label }}</label>
+        {{ form.message }}
+        {% for error in form.message.errors %}
+            <div class="text-danger">{{ error }}</div>
+        {% endfor %}
+    </div>
+
+    <button type="submit" class="btn btn-primary">Изпрати</button>
+</form>
+{% endblock %}
