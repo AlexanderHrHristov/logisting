@@ -49,7 +49,9 @@ INSTALLED_APPS = [
 ] + MY_APPS
 
 
-# AUTH_USER_MODEL = 'users.AppUser'
+
+AUTH_USER_MODEL = 'users.AppUser'
+
 
 LOGIN_URL = 'login'
 
@@ -150,6 +152,12 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
+
+
+LANGUAGE_CODE = 'bg'
+
+USE_I18N = True
+USE_L10N = True
 
 
 # Default primary key field type
