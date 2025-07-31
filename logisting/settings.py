@@ -10,9 +10,11 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 import os
+from dotenv import load_dotenv
 from pathlib import Path
 
-from dotenv import load_dotenv
+# Load environment variables from .env file
+load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -55,9 +57,8 @@ AUTH_USER_MODEL = 'users.AppUser'
 
 LOGIN_URL = 'login'
 
-LOGIN_REDIRECT_URL = 'home'
-
-LOGOUT_REDIRECT_URL = 'home'
+LOGIN_REDIRECT_URL = 'core:home'   # къде да отиде след успешен вход
+LOGOUT_REDIRECT_URL = 'core:home'  # къде да отиде след изход
 
 
 
@@ -143,7 +144,7 @@ STATICFILES_DIRS = [
 ]
 
 
-load_dotenv()
+
 
 EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')

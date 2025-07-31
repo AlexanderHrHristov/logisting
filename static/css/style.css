@@ -62,3 +62,9 @@ nav form button {
 p {
     font-size: 18px; /* можеш да промениш 18px на желан размер */
 }
+
+.my-error {
+    color: red;
+    font-weight: bold;
+}
+
