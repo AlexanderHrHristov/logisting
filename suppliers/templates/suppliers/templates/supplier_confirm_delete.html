@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Потвърждение за изтриване</h1>
+
+<p>Сигурни ли сте, че искате да изтриете доставчик "{{ object.name }}"?</p>
+
+<form method="post">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-danger">Изтрий</button>
+    <a href="{% url 'suppliers:supplier-list' %}" class="btn btn-secondary">Отказ</a>
+</form>
+{% endblock %}

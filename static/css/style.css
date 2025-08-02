@@ -68,3 +68,23 @@ p {
     font-weight: bold;
 }
 
+.suppliers-form label {
+    color: white;
+    font-weight: bold;
+}
+
+form p {
+    color: white;
+    font-weight: bold;
+}
+
+form div {
+    color: white;
+    font-weight: bold;
+}
+
+h1 {
+    color: white;
+    font-weight: bold;
+}
+

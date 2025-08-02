@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+
+{% block content %}
+{#<h1>Списък с доставчици</h1>#}
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Име</th>
+            <th>Имейл</th>
+            <th>Телефон</th>
+            <th>Лице за контакт</th>
+            <th>Доставка</th>
+            <th>Отговорен логистик</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for supplier in suppliers %}
+        <tr>
+            <td>{{ supplier.name }}</td>
+            <td>{{ supplier.email }}</td>
+            <td>{{ supplier.phone }}</td>
+            <td>{{ supplier.contact_person }}</td>
+            <td>{{ supplier.get_delivery_method_display }}</td>
+            <td>{{ supplier.responsible_logistic }}</td>
+            <td>
+                <a href="{% url 'suppliers:supplier-update' supplier.pk %}" class="btn btn-sm btn-primary">Редакция</a>
+                {% if is_logistics_manager %}
+                    <a href="{% url 'suppliers:supplier-delete' supplier.pk %}" class="btn btn-sm btn-danger">Изтриване</a>
+                {% endif %}
+            </td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="7">Няма въведени доставчици.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% if is_logistics_manager %}
+    <a href="{% url 'suppliers:supplier-create' %}" class="btn btn-success">Добави доставчик</a>
+{% endif %}
+
+{% endblock %}
