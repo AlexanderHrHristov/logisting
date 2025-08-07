@@ -1,6 +1,8 @@
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models import Q
+from internationalflavor.vat_number.validators import VATNumberValidator
+
 
 from users.models import AppUser
 
@@ -16,6 +18,13 @@ class Supplier(models.Model):
         blank=True,
         null=True,
         verbose_name="Име"
+    )
+
+    vat_number = models.CharField(
+        max_length=20,
+        blank=True,
+        null=True,
+        verbose_name="ДДС номер"
     )
 
     email = models.EmailField(

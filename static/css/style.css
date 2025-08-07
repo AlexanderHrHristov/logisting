@@ -87,10 +87,3 @@ h1 {
     color: white;
     font-weight: bold;
 }
-
-
-table th, table td {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}

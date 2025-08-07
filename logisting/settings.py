@@ -38,7 +38,8 @@ MY_APPS = [
     'core.apps.CoreConfig',
     'users.apps.UsersConfig',
     'suppliers.apps.SuppliersConfig',
-
+    'django_filters',
+    "internationalflavor",
 ]   
 
 INSTALLED_APPS = [

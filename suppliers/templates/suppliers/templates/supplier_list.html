@@ -3,10 +3,21 @@
 {% block content %}
 {#<h1>Списък с доставчици</h1>#}
 
-<table class="table table-sm table-stripped table-bordered ">
-    <thead>
+<form method="get">
+  <div style="display: flex; gap: 1rem; align-items: center;">
+    {{ filter.form.name.label_tag }} {{ filter.form.name }}
+    {{ filter.form.delivery_method.label_tag }} {{ filter.form.delivery_method }}
+    {{ filter.form.responsible_logistic.label_tag }} {{ filter.form.responsible_logistic }}
+    <button type="submit">Филтрирай</button>
+  </div>
+</form>
+
+
+<table class="table table-sm table-striped table-bordered table-responsive">
+    <thead class="table-dark">
         <tr>
             <th>Име</th>
+            <th>ДДС номер</th>
             <th>Имейл</th>
             <th>Телефон</th>
             <th>Лице за контакт</th>
@@ -19,6 +30,7 @@
         {% for supplier in suppliers %}
         <tr>
             <td>{{ supplier.name }}</td>
+            <td>{{ supplier.vat_number }}</td>
             <td>{{ supplier.email }}</td>
             <td>{{ supplier.phone }}</td>
             <td>{{ supplier.contact_person }}</td>

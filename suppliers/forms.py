@@ -2,6 +2,8 @@ from django import forms
 
 from datetime import date
 
+from internationalflavor.vat_number.forms import VATNumberFormField
+
 from suppliers.models import Supplier
 
 
@@ -10,6 +12,7 @@ class SupplierForm(forms.ModelForm):
         model = Supplier
         fields = [
             'name',
+            'vat_number',
             'email',
             'phone',
             'contact_person',
@@ -19,6 +22,7 @@ class SupplierForm(forms.ModelForm):
         ]
         widgets = {
             'name': forms.TextInput(attrs={'class': 'form-control'}),
+            'vat_number': forms.TextInput(attrs={'class': 'form-control'}),
             'email': forms.EmailInput(attrs={'class': 'form-control'}),
             'phone': forms.TextInput(attrs={'class': 'form-control'}),
             'contact_person': forms.TextInput(attrs={'class': 'form-control'}),

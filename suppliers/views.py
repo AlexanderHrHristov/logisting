@@ -2,16 +2,20 @@ from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
+from django_filters.views import FilterView
+
 from .models import Supplier
 from .forms import SupplierForm
 from logisting.mixins import LogisticsManagerRequiredMixin, LogisticsOrManagerRequiredMixin
+from .filters import SupplierFilter
 
 
-class SupplierListView(LoginRequiredMixin, LogisticsOrManagerRequiredMixin, ListView):
+class SupplierListView(LoginRequiredMixin, LogisticsOrManagerRequiredMixin, FilterView):
     model = Supplier
     template_name = 'suppliers/templates/supplier_list.html'
     context_object_name = 'suppliers'
     paginate_by = 20
+    filterset_class = SupplierFilter
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
