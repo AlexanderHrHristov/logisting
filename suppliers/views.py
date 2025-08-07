@@ -7,7 +7,7 @@ from .forms import SupplierForm
 from logisting.mixins import LogisticsManagerRequiredMixin, LogisticsOrManagerRequiredMixin
 
 
-class SupplierListView(ListView):
+class SupplierListView(LoginRequiredMixin, LogisticsOrManagerRequiredMixin, ListView):
     model = Supplier
     template_name = 'suppliers/templates/supplier_list.html'
     context_object_name = 'suppliers'
@@ -18,7 +18,6 @@ class SupplierListView(ListView):
         user = self.request.user
         context['is_logistics_manager'] = user.groups.filter(name='Logistics Manager').exists()
         return context
-
 
 
 class SupplierCreateView(LoginRequiredMixin, LogisticsOrManagerRequiredMixin, CreateView):
