@@ -67,8 +67,29 @@ class Supplier(models.Model):
     )
     is_active = models.BooleanField(default=True)
 
+    def __str__(self):
+        return self.name
+
     def clean(self):
         if self.responsible_logistic:
             user_groups = self.responsible_logistic.groups.values_list('name', flat=True)
             if 'Logistics' not in user_groups and 'Logistics Manager' not in user_groups:
                 raise ValidationError("Отговорният логистик трябва да е с роля логистик или логистичен мениджър.")
+
+
+class Contract(models.Model):
+    CONTRACT_TYPE_CHOICES = [
+        ('supply', 'Стоки'),
+        ('service', 'Услуги'),
+        ('other', 'Други'),
+    ]
+
+    supplier = models.ForeignKey('Supplier', on_delete=models.CASCADE, verbose_name="Доставчик")
+    contract_type = models.CharField(max_length=20, choices=CONTRACT_TYPE_CHOICES, default='supply', verbose_name="Тип")
+    signed_date = models.DateField(verbose_name="Дата на подписване")
+    expiry_date = models.DateField(verbose_name="Дата на изтичане", null=True, blank=True)
+    file = models.FileField(upload_to='contracts/', verbose_name="Файл")
+    is_active = models.BooleanField(default=True, verbose_name="Активен")
+
+    def __str__(self):
+        return f"Договор {self.contract_type} – {self.supplier.name} ({self.is_active})"

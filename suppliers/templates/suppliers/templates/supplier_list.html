@@ -1,7 +1,8 @@
 {% extends 'base.html' %}
 
 {% block content %}
-{#<h1>Списък с доставчици</h1>#}
+<h2 class="mb-4" style="color: white; font-weight: bold;">🏢 Доставчици на основни стоки "Стинг"АД</h2>
+
 
 <form method="get">
   <div style="display: flex; gap: 1rem; align-items: center;">
@@ -54,5 +55,27 @@
 {% if is_logistics_manager %}
     <a href="{% url 'suppliers:supplier-create' %}" class="btn btn-success">Добави доставчик</a>
 {% endif %}
+
+
+{% if is_paginated %}
+  <div class="pagination">
+    <span class="page-links">
+      {% if page_obj.has_previous %}
+        <a href="?page=1">&laquo; първа</a>
+        <a href="?page={{ page_obj.previous_page_number }}">назад</a>
+      {% endif %}
+
+      <span class="current">
+        Страница {{ page_obj.number }} от {{ page_obj.paginator.num_pages }}.
+      </span>
+
+      {% if page_obj.has_next %}
+        <a href="?{% if request.GET %}{{ request.GET.urlencode }}&{% endif %}page={{ page_obj.next_page_number }}">напред</a>
+        <a href="?page={{ page_obj.paginator.num_pages }}">последна &raquo;</a>
+      {% endif %}
+    </span>
+  </div>
+{% endif %}
+
 
 {% endblock %}

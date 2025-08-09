@@ -1,16 +1,21 @@
 from django.urls import reverse_lazy
-from django.views.generic import ListView, CreateView, UpdateView, DeleteView
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.views.generic import ListView, CreateView, UpdateView, DeleteView, View
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib import messages
 from django_filters.views import FilterView
+from .models import Supplier, Contract
+from .forms import SupplierForm, ContractForm
+from logisting.mixins import (
+    LegalOnlyMixin,
+    LogisticsManagerRequiredMixin,
+    LogisticsOrManagerRequiredMixin,
+    LogisticsOrLegalRequiredMixin,
+)
+from .filters import SupplierFilter, ContractFilter
+from django.shortcuts import redirect, get_object_or_404
 
-from .models import Supplier
-from .forms import SupplierForm
-from logisting.mixins import LogisticsManagerRequiredMixin, LogisticsOrManagerRequiredMixin
-from .filters import SupplierFilter
 
-
-class SupplierListView(LoginRequiredMixin, LogisticsOrManagerRequiredMixin, FilterView):
+class SupplierListView(LoginRequiredMixin, LegalOnlyMixin, LogisticsOrManagerRequiredMixin, FilterView):
     model = Supplier
     template_name = 'suppliers/templates/supplier_list.html'
     context_object_name = 'suppliers'
@@ -31,7 +36,6 @@ class SupplierCreateView(LoginRequiredMixin, LogisticsOrManagerRequiredMixin, Cr
     success_url = reverse_lazy('suppliers:supplier-list')
 
 
-
 class SupplierUpdateView(LoginRequiredMixin, LogisticsOrManagerRequiredMixin, UpdateView):
     model = Supplier
     form_class = SupplierForm
@@ -46,3 +50,51 @@ class SupplierDeleteView(LoginRequiredMixin, LogisticsManagerRequiredMixin, Dele
     def delete(self, request, *args, **kwargs):
         messages.success(request, 'Доставчикът беше изтрит успешно.')
         return super().delete(request, *args, **kwargs)
+
+
+# suppliers/views.py
+class ContractListView(LoginRequiredMixin, UserPassesTestMixin, ListView):
+    model = Contract
+    template_name = 'suppliers/templates/contract_list.html'
+    context_object_name = 'contracts'
+    paginate_by = 20
+
+    def test_func(self):
+        return self.request.user.groups.filter(name__in=['Legal', 'Logistics', 'Logistics Manager']).exists()
+
+class ContractCreateView(LoginRequiredMixin, LegalOnlyMixin, CreateView):
+    model = Contract
+    form_class = ContractForm
+    template_name = 'suppliers/templates/contract_form.html'
+    success_url = reverse_lazy('suppliers:contract-list')
+
+class ContractUpdateView(LoginRequiredMixin, LegalOnlyMixin, UpdateView):
+    model = Contract
+    form_class = ContractForm
+    template_name = 'suppliers/templates/contract_form.html'
+    success_url = reverse_lazy('suppliers:contract-list')
+
+class ContractToggleActiveView(LoginRequiredMixin, LegalOnlyMixin, View):
+    def post(self, request, pk):
+        contract = get_object_or_404(Contract, pk=pk)
+        contract.is_active = not contract.is_active
+        contract.save()
+        messages.success(request, "Статусът на договора беше променен.")
+        return redirect('suppliers:contract-list')
+
+class ContractDeleteView(LoginRequiredMixin, UserPassesTestMixin, View):
+    def test_func(self):
+        return self.request.user.is_superuser
+
+    def post(self, request, pk):
+        contract = get_object_or_404(Contract, pk=pk)
+        contract.delete()
+        messages.success(request, "Договорът беше изтрит.")
+        return redirect('suppliers:contract-list')
+
+class ContractListView(LoginRequiredMixin, LogisticsOrLegalRequiredMixin, FilterView):
+    model = Contract
+    template_name = 'suppliers/templates/contract_list.html'
+    context_object_name = 'contracts'
+    paginate_by = 20
+    filterset_class = ContractFilter

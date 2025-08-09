@@ -4,7 +4,7 @@ from datetime import date
 
 from internationalflavor.vat_number.forms import VATNumberFormField
 
-from suppliers.models import Supplier
+from suppliers.models import Supplier, Contract
 
 
 class SupplierForm(forms.ModelForm):
@@ -29,4 +29,14 @@ class SupplierForm(forms.ModelForm):
             'delivery_method': forms.Select(attrs={'class': 'form-select'}),  # Избор от dropdown
             'responsible_logistic': forms.Select(attrs={'class': 'form-select'}),
             'is_active': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
+        }
+
+
+class ContractForm(forms.ModelForm):
+    class Meta:
+        model = Contract
+        fields = '__all__'
+        widgets = {
+            'signed_date': forms.DateInput(attrs={'type': 'date'}),
+            'expiry_date': forms.DateInput(attrs={'type': 'date'}),
         }
