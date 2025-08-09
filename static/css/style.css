@@ -92,3 +92,24 @@ h2 {
     color: white;
     font-weight: bold;
 }
+
+.filters-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px; /* разстояние между полетата */
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.filters-row select,
+.filters-row input[type="date"] {
+    max-width: 150px;
+    height: 32px;
+    font-size: 0.9rem;
+}
+
+.filters-row button {
+    height: 32px;
+    padding: 0 12px;
+    font-size: 0.9rem;
+}

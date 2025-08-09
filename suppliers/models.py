@@ -1,6 +1,8 @@
+import django_filters
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models import Q
+from django import forms
 from internationalflavor.vat_number.validators import VATNumberValidator
 
 
@@ -84,12 +86,48 @@ class Contract(models.Model):
         ('other', 'Други'),
     ]
 
-    supplier = models.ForeignKey('Supplier', on_delete=models.CASCADE, verbose_name="Доставчик")
-    contract_type = models.CharField(max_length=20, choices=CONTRACT_TYPE_CHOICES, default='supply', verbose_name="Тип")
-    signed_date = models.DateField(verbose_name="Дата на подписване")
-    expiry_date = models.DateField(verbose_name="Дата на изтичане", null=True, blank=True)
-    file = models.FileField(upload_to='contracts/', verbose_name="Файл")
-    is_active = models.BooleanField(default=True, verbose_name="Активен")
+    ACTIVE_CHOICES = [
+        ('', 'Всички'),
+        ('yes', 'Да'),
+        ('no', 'Не'),
+    ]
+
+    supplier = models.ForeignKey(
+        'Supplier',
+        on_delete=models.CASCADE,
+        verbose_name="Доставчик"
+    )
+    contract_type = models.CharField(
+        max_length=20,
+        choices=CONTRACT_TYPE_CHOICES,
+        default='supply',
+        verbose_name="Тип"
+    )
+
+    signed_date = models.DateField(
+        verbose_name="Дата на подписване"
+    )
+
+    expiry_date = models.DateField(
+        verbose_name="Дата на изтичане",
+        null=True,
+        blank=True
+    )
+
+    file = models.FileField(
+        upload_to='contracts/',
+        verbose_name="Файл"
+    )
+
+    is_active = django_filters.ChoiceFilter(
+        choices=ACTIVE_CHOICES,
+        label='Активен',
+        method='filter_is_active',
+        widget=forms.Select(attrs={
+            'class': 'form-select',
+            'style': 'max-width: 120px; display: inline-block;'
+        })
+    )
 
     def __str__(self):
         return f"Договор {self.contract_type} – {self.supplier.name} ({self.is_active})"

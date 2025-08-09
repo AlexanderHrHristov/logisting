@@ -27,51 +27,37 @@ class SupplierFilter(FilterSet):
 
 
 class ContractFilter(django_filters.FilterSet):
+    ACTIVE_CHOICES = (
+        ('', 'Всички'),
+        ('yes', 'Да'),
+        ('no', 'Не'),
+    )
+
+    common_attrs = {
+        'class': 'form-select form-select-sm',
+        'style': 'max-width: 150px; display: inline-block; margin-right: 8px;'
+    }
+
     supplier = django_filters.ModelChoiceFilter(
         queryset=Supplier.objects.all(),
         label='Доставчик',
-        empty_label='Всички доставчици'
+        widget=forms.Select(attrs=common_attrs)
     )
 
     contract_type = django_filters.ChoiceFilter(
         choices=Contract.CONTRACT_TYPE_CHOICES,
-        label='Тип договор'
+        label='Тип',
+        widget=forms.Select(attrs=common_attrs)
     )
 
-    expiry_date__gt = django_filters.DateFilter(
-        field_name='expiry_date',
-        lookup_expr='gt',
-        label='Изтичане след',
-        widget=forms.DateInput(attrs={'type': 'date'})
-    )
-
-    expiry_date__lt = django_filters.DateFilter(
-        field_name='expiry_date',
-        lookup_expr='lt',
-        label='Изтичане преди',
-        widget=forms.DateInput(attrs={'type': 'date'})
-    )
-
-    ACTIVE_CHOICES = (
-        ('', 'Всички'),
-        ('true', 'Да'),
-        ('false', 'Не'),
+    expiry_date = django_filters.DateFilter(
+        label='Изтича след',
+        lookup_expr='gte',
+        widget=forms.DateInput(attrs={**common_attrs, 'type': 'date'})
     )
 
     is_active = django_filters.ChoiceFilter(
         choices=ACTIVE_CHOICES,
         label='Активен',
-        method='filter_is_active',
-        widget=forms.Select(attrs={'class': 'form-select'})
+        widget=forms.Select(attrs=common_attrs)
     )
-
-    def filter_is_active(self, queryset, name, value):
-        if value == 'true':
-            return queryset.filter(is_active=True)
-        elif value == 'false':
-            return queryset.filter(is_active=False)
-        return queryset  # '' - всички
-
-    class Meta:
-        model = Contract
-        fields = ['supplier', 'contract_type', 'expiry_date__gt', 'expiry_date__lt', 'is_active']

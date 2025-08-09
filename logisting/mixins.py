@@ -4,8 +4,10 @@ class GroupRequiredMixin(UserPassesTestMixin):
     allowed_groups = []  # списък с групи, които имат достъп
 
     def test_func(self):
-        user_groups = self.request.user.groups.values_list('name', flat=True)
-        return any(group in self.allowed_groups for group in user_groups)
+        user = self.request.user
+        if user.is_superuser:
+            return True
+        return user.groups.filter(name__in=self.allowed_groups).exists()
 
 
 class LegalOnlyMixin(GroupRequiredMixin):
