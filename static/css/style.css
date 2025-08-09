@@ -94,22 +94,36 @@ h2 {
 }
 
 .filters-row {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px; /* разстояние между полетата */
-    align-items: center;
-    margin-bottom: 15px;
+  display: flex;
+  gap: 1rem;
+  align-items: center; /* вертикално центриране */
+  flex-wrap: wrap; /* ако няма място, да слиза на следващ ред */
+}
+
+.filters-row > div {
+  display: flex;
+  flex-direction: column;
+}
+
+.filters-row label {
+  font-weight: bold;
+  color: white; /* ако фонът ти е тъмен */
+  margin-bottom: 0.25rem;
 }
 
 .filters-row select,
+.filters-row input[type="text"],
 .filters-row input[type="date"] {
-    max-width: 150px;
-    height: 32px;
-    font-size: 0.9rem;
+  background-color: #333; /* тъмно поле, можеш да смениш */
+  color: white;
+  border: 1px solid #555;
+  border-radius: 4px;
+  padding: 0.25rem 0.5rem;
+  height: 2rem;
+  min-width: 150px; /* примерно ширина за всички */
 }
 
 .filters-row button {
-    height: 32px;
-    padding: 0 12px;
-    font-size: 0.9rem;
+  height: 2.5rem;
+  align-self: flex-end; /* бутонът да се подравни по дъното */
 }

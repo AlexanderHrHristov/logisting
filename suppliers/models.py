@@ -1,3 +1,5 @@
+from datetime import timezone
+
 import django_filters
 from django.core.exceptions import ValidationError
 from django.db import models
@@ -119,15 +121,13 @@ class Contract(models.Model):
         verbose_name="Файл"
     )
 
-    is_active = django_filters.ChoiceFilter(
-        choices=ACTIVE_CHOICES,
-        label='Активен',
-        method='filter_is_active',
-        widget=forms.Select(attrs={
-            'class': 'form-select',
-            'style': 'max-width: 120px; display: inline-block;'
-        })
-    )
+    @property
+    def is_active_dynamic(self):
+        if self.expiry_date and self.expiry_date < timezone.now().date():
+            return False
+        return True
+
+    is_active = models.BooleanField(default=True, verbose_name="Активен")
 
     def __str__(self):
         return f"Договор {self.contract_type} – {self.supplier.name} ({self.is_active})"

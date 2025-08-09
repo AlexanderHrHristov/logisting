@@ -5,21 +5,26 @@
 <div class="container mt-4">
 <h2 class="mb-4" style="color: white; font-weight: bold;">📄 Регистър на договори</h2>
 
-<form method="get" class="filters-row" style="display: flex; gap: 1rem; align-items: center;">
+<form method="get" class="filters-row">
   <div>
-    {{ filter.form.supplier.label_tag }} {{ filter.form.supplier }}
+    {{ filter.form.supplier.label_tag }}
+    {{ filter.form.supplier }}
   </div>
   <div>
-    {{ filter.form.contract_type.label_tag }} {{ filter.form.contract_type }}
+    {{ filter.form.contract_type.label_tag }}
+    {{ filter.form.contract_type }}
   </div>
   <div>
-    {{ filter.form.expiry_date.label_tag }} {{ filter.form.expiry_date }}
+    {{ filter.form.expiry_date.label_tag }}
+    {{ filter.form.expiry_date }}
   </div>
   <div>
-    {{ filter.form.is_active.label_tag }} {{ filter.form.is_active }}
+    {{ filter.form.is_active.label_tag }}
+    {{ filter.form.is_active }}
   </div>
   <button type="submit" class="btn btn-sm btn-primary">Филтрирай</button>
 </form>
+
 
 
 
