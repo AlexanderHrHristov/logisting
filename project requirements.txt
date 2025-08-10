@@ -24,11 +24,12 @@ according to the project's functionality.
 + While others have permissions for limited CRUD functionalities (staff).
 + User roles should be managed from the admin site.
 + Role management must be secure and error-safe.
-+ Add at least 5 custom options (in total) to the admin interface (e.g., filters, list display,
-ordering, etc.).
 + Unauthenticated users (public part) have only 'get' permissions, e.g., landing page, details,
 about page, and login/register 'post' permissions.
 
+
+- Add at least 5 custom options (in total) to the admib interface (e.g. filters, list display,
+ordering, etc.).
 
 - The application must have at least 10 web pages:
 
