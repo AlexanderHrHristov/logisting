@@ -48,7 +48,7 @@ like PostgreSQL/MySQL/MariaDB/Oracle, etc.)
 - Implement Exception Handling and Data Validation to avoid crashes when invalid data is
 entered (both client-side and server-side)
 
-
+- Add to requirements.txt psycopg2-binary 
 
 - You must implement a new "main" functionality! It is considered two additional views with
 CRUD operations that extend your current project. This should be done for a logged-in user.
