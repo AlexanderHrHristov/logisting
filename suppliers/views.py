@@ -67,7 +67,8 @@ class ContractListView(LoginRequiredMixin, UserPassesTestMixin, ListView):
         return context
 
     def test_func(self):
-        return self.request.user.groups.filter(name__in=['Legal', 'Logistics', 'Logistics Manager']).exists()
+        user = self.request.user
+        return user.is_superuser or user.groups.filter(name__in=['Legal', 'Logistics', 'Logistics Manager']).exists()
 class ContractCreateView(LoginRequiredMixin, LegalOnlyMixin, CreateView):
     model = Contract
     form_class = ContractForm
