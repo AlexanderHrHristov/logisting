@@ -3,8 +3,8 @@ from django.views.generic import ListView, CreateView, UpdateView, DeleteView, V
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib import messages
 from django_filters.views import FilterView
-from .models import Supplier, Contract
-from .forms import SupplierForm, ContractForm
+from .models import Supplier, Contract, DeliverySchedule
+from .forms import SupplierForm, ContractForm, DeliveryScheduleForm
 from logisting.mixins import (
     LegalOnlyMixin,
     LogisticsManagerRequiredMixin,
@@ -69,6 +69,8 @@ class ContractListView(LoginRequiredMixin, UserPassesTestMixin, ListView):
     def test_func(self):
         user = self.request.user
         return user.is_superuser or user.groups.filter(name__in=['Legal', 'Logistics', 'Logistics Manager']).exists()
+
+
 class ContractCreateView(LoginRequiredMixin, LegalOnlyMixin, CreateView):
     model = Contract
     form_class = ContractForm
@@ -101,3 +103,42 @@ class ContractDeleteView(LoginRequiredMixin, UserPassesTestMixin, View):
         contract.delete()
         messages.success(request, "Договорът беше изтрит.")
         return redirect('suppliers:contract-list')
+
+
+class DeliveryScheduleListView(LoginRequiredMixin, ListView):
+    model = DeliverySchedule
+    template_name = 'suppliers/templates/delivery_schedule.html'
+    context_object_name = 'schedules'
+
+    def get_queryset(self):
+        qs = super().get_queryset()
+        day = self.request.GET.get('day')
+        if day:
+            qs = qs.filter(day=day)
+        return qs.order_by('day', 'time_slot')
+
+
+class DeliveryScheduleCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
+    model = DeliverySchedule
+    form_class = DeliveryScheduleForm
+    template_name = 'suppliers/templates/delivery_schedule_form.html'
+    success_url = reverse_lazy('delivery_schedule_list')
+
+    def test_func(self):
+        user = self.request.user
+        if user.is_superuser:
+            return True
+        return user.groups.filter(name__in=['Logistics', 'Logistics.manager']).exists()
+
+
+class DeliveryScheduleUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+    model = DeliverySchedule
+    form_class = DeliveryScheduleForm
+    template_name = 'suppliers/templates/delivery_schedule_form.html'
+    success_url = reverse_lazy('delivery_schedule_list')
+
+    def test_func(self):
+        user = self.request.user
+        if user.is_superuser:
+            return True
+        return user.groups.filter(name__in=['Logistics', 'Logistics.manager']).exists()

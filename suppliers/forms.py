@@ -4,7 +4,7 @@ from datetime import date
 
 from internationalflavor.vat_number.forms import VATNumberFormField
 
-from suppliers.models import Supplier, Contract
+from suppliers.models import Supplier, Contract, DeliverySchedule
 
 
 class SupplierForm(forms.ModelForm):
@@ -41,3 +41,21 @@ class ContractForm(forms.ModelForm):
             'expiry_date': forms.DateInput(attrs={'type': 'date'}),
         }
 
+
+
+class DeliveryScheduleForm(forms.ModelForm):
+    class Meta:
+        model = DeliverySchedule
+        fields = ['day', 'time_slot', 'supplier', 'logistics_responsible', 'note']
+
+    def clean(self):
+        cleaned_data = super().clean()
+        day = cleaned_data.get('day')
+        time_slot = cleaned_data.get('time_slot')
+
+        if day and time_slot:
+            count = DeliverySchedule.objects.filter(day=day, time_slot=time_slot).count()
+            # Ако е създаване (няма pk) и вече има 8 записи
+            if self.instance.pk is None and count >= 8:
+                raise forms.ValidationError("Този слот вече е запълнен с максимален брой доставчици (8).")
+        return cleaned_data

@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>График на доставките</h1>
+
+<form method="get" class="filter-form">
+  <label for="day">Филтрирай по ден:</label>
+  <select name="day" id="day">
+    <option value="">Всички</option>
+    <!-- Замени с истинските дни, които използваш -->
+    <option value="Monday" {% if request.GET.day == 'Monday' %}selected{% endif %}>Понеделник</option>
+    <option value="Tuesday" {% if request.GET.day == 'Tuesday' %}selected{% endif %}>Вторник</option>
+    <option value="Wednesday" {% if request.GET.day == 'Wednesday' %}selected{% endif %}>Сряда</option>
+    <!-- Добави останалите дни -->
+  </select>
+  <button type="submit">Филтрирай</button>
+</form>
+
+<table>
+  <thead>
+    <tr>
+      <th>Ден</th>
+      <th>Часов слот</th>
+      <th>Бележки</th>
+      <th>Действия</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for schedule in schedules %}
+    <tr>
+      <td>{{ schedule.day }}</td>
+      <td>{{ schedule.time_slot }}</td>
+      <td>{{ schedule.note }}</td>
+      <td>
+        <a href="{% url 'delivery_schedule_update' schedule.pk %}">Редактирай</a>
+      </td>
+    </tr>
+    {% empty %}
+    <tr><td colspan="4">Няма записи</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<a href="{% url 'suppliers:delivery_schedule_create' %}">Добави нов график</a>
+
+{% endblock %}

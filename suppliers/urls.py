@@ -1,6 +1,7 @@
 from django.urls import path
 from .views import SupplierListView, SupplierCreateView, SupplierUpdateView, SupplierDeleteView, ContractListView, \
-    ContractCreateView, ContractUpdateView, ContractToggleActiveView, ContractDeleteView
+    ContractCreateView, ContractUpdateView, ContractToggleActiveView, ContractDeleteView, DeliveryScheduleListView, \
+    DeliveryScheduleCreateView, DeliveryScheduleUpdateView
 
 app_name = 'suppliers'
 
@@ -15,4 +16,7 @@ urlpatterns = [
     path('contracts/<int:pk>/update/', ContractUpdateView.as_view(), name='contract-update'),
     path('contracts/<int:pk>/toggle/', ContractToggleActiveView.as_view(), name='contract-toggle'),
     path('contracts/<int:pk>/delete/', ContractDeleteView.as_view(), name='contract-delete'),
+    path('delivery-schedule/', DeliveryScheduleListView.as_view(), name='delivery_schedule_list'),
+    path('delivery-schedule/add/', DeliveryScheduleCreateView.as_view(), name='delivery_schedule_create'),
+    path('delivery-schedule/<int:pk>/edit/', DeliveryScheduleUpdateView.as_view(), name='delivery_schedule_update'),
 ]
