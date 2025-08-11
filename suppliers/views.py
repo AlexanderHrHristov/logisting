@@ -9,10 +9,10 @@ from logisting.mixins import (
     LegalOnlyMixin,
     LogisticsManagerRequiredMixin,
     LogisticsOrManagerRequiredMixin,
-    LogisticsOrLegalRequiredMixin,
 )
 from .filters import SupplierFilter, ContractFilter
 from django.shortcuts import redirect, get_object_or_404
+
 
 
 class SupplierListView(LoginRequiredMixin, LegalOnlyMixin, LogisticsOrManagerRequiredMixin, FilterView):
@@ -42,6 +42,7 @@ class SupplierUpdateView(LoginRequiredMixin, LogisticsOrManagerRequiredMixin, Up
     template_name = 'suppliers/templates/supplier_form.html'
     success_url = reverse_lazy('suppliers:supplier-list')
 
+
 class SupplierDeleteView(LoginRequiredMixin, LogisticsManagerRequiredMixin, DeleteView):
     model = Supplier
     template_name = 'suppliers/templates/supplier_confirm_delete.html'
@@ -52,27 +53,34 @@ class SupplierDeleteView(LoginRequiredMixin, LogisticsManagerRequiredMixin, Dele
         return super().delete(request, *args, **kwargs)
 
 
-# suppliers/views.py
 class ContractListView(LoginRequiredMixin, UserPassesTestMixin, ListView):
     model = Contract
     template_name = 'suppliers/templates/contract_list.html'
     context_object_name = 'contracts'
     paginate_by = 20
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        contract_filter = ContractFilter(self.request.GET, queryset=self.get_queryset())
+        context['filter'] = contract_filter
+        context['contracts'] = contract_filter.qs
+        return context
+
     def test_func(self):
         return self.request.user.groups.filter(name__in=['Legal', 'Logistics', 'Logistics Manager']).exists()
-
 class ContractCreateView(LoginRequiredMixin, LegalOnlyMixin, CreateView):
     model = Contract
     form_class = ContractForm
     template_name = 'suppliers/templates/contract_form.html'
     success_url = reverse_lazy('suppliers:contract-list')
 
+
 class ContractUpdateView(LoginRequiredMixin, LegalOnlyMixin, UpdateView):
     model = Contract
     form_class = ContractForm
     template_name = 'suppliers/templates/contract_form.html'
     success_url = reverse_lazy('suppliers:contract-list')
+
 
 class ContractToggleActiveView(LoginRequiredMixin, LegalOnlyMixin, View):
     def post(self, request, pk):
@@ -81,6 +89,7 @@ class ContractToggleActiveView(LoginRequiredMixin, LegalOnlyMixin, View):
         contract.save()
         messages.success(request, "Статусът на договора беше променен.")
         return redirect('suppliers:contract-list')
+
 
 class ContractDeleteView(LoginRequiredMixin, UserPassesTestMixin, View):
     def test_func(self):
@@ -91,10 +100,3 @@ class ContractDeleteView(LoginRequiredMixin, UserPassesTestMixin, View):
         contract.delete()
         messages.success(request, "Договорът беше изтрит.")
         return redirect('suppliers:contract-list')
-
-class ContractListView(LoginRequiredMixin, LogisticsOrLegalRequiredMixin, FilterView):
-    model = Contract
-    template_name = 'suppliers/templates/contract_list.html'
-    context_object_name = 'contracts'
-    paginate_by = 20
-    filterset_class = ContractFilter

@@ -27,12 +27,6 @@ class SupplierFilter(FilterSet):
 
 
 class ContractFilter(django_filters.FilterSet):
-    ACTIVE_CHOICES = [
-        ('', 'Всички'),
-        ('yes', 'Да'),
-        ('no', 'Не'),
-    ]
-
     common_attrs = {
         'class': 'form-select form-select-sm',
         'style': 'max-width: 150px; display: inline-block; margin-right: 8px;'
@@ -58,12 +52,13 @@ class ContractFilter(django_filters.FilterSet):
 
     is_active = django_filters.ChoiceFilter(
         choices=(
-            ('', 'Всички'),  # празен string за всички записи без филтър
+            ('', 'Всички'),
             ('True', 'Да'),
             ('False', 'Не'),
         ),
         method='filter_is_active',
         label='Активен',
+        widget=forms.Select(attrs=common_attrs)
     )
 
     class Meta:
@@ -75,4 +70,4 @@ class ContractFilter(django_filters.FilterSet):
             return queryset.filter(is_active=True)
         elif value == 'False':
             return queryset.filter(is_active=False)
-        return queryset  # '' или друго - не филтрира
+        return queryset

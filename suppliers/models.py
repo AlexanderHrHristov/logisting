@@ -7,14 +7,14 @@ from django.db.models import Q
 from django import forms
 from internationalflavor.vat_number.validators import VATNumberValidator
 
-
+from django.conf import settings
 from users.models import AppUser
 
 
 class Supplier(models.Model):
     DELIVERY_METHOD_CHOICES = [
-        ('delivery', 'Доставка'),
-        ('pickup', 'Ние вземаме'),
+        ('delivery', 'На място'),
+        ('pickup', 'Вземане'),
     ]
     name = models.CharField(
         max_length=50,
@@ -131,3 +131,32 @@ class Contract(models.Model):
 
     def __str__(self):
         return f"Договор {self.contract_type} – {self.supplier.name} ({self.is_active})"
+
+#
+# class DeliverySchedule(models.Model):
+#     DAYS_OF_WEEK = [
+#         ('mon', 'Monday'),
+#         ('tue', 'Tuesday'),
+#         ('wed', 'Wednesday'),
+#         ('thu', 'Thursday'),
+#         ('fri', 'Friday'),
+#     ]
+#
+#     TIME_SLOTS = [
+#         ('08-10', '08:00-10:00'),
+#         ('10-12', '10:00-12:00'),
+#         ('12-14', '12:00-14:00'),
+#         ('14-16', '14:00-16:00'),
+#     ]
+#
+#     day = models.CharField(max_length=3,null=True, choices=DAYS_OF_WEEK)
+#     time_slot = models.CharField(max_length=5, choices=TIME_SLOTS)
+#     supplier = models.ForeignKey('suppliers.Supplier', on_delete=models.CASCADE, related_name='delivery_schedules')
+#     logistics_responsible = models.ForeignKey('suppliers.Supplier',null=True, on_delete=models.CASCADE, related_name='logistics_schedules')
+#     note = models.CharField(max_length=150, blank=True)
+#
+#     class Meta:
+#         unique_together = ('day', 'time_slot', 'supplier')
+#
+#     def __str__(self):
+#         return f"{self.get_day_display()} {self.get_time_slot_display()} - {self.supplier}"

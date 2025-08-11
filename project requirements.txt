@@ -24,22 +24,17 @@ according to the project's functionality.
 + While others have permissions for limited CRUD functionalities (staff).
 + User roles should be managed from the admin site.
 + Role management must be secure and error-safe.
-+ Add at least 5 custom options (in total) to the admin interface (e.g., filters, list display,
-ordering, etc.).
 + Unauthenticated users (public part) have only 'get' permissions, e.g., landing page, details,
 about page, and login/register 'post' permissions.
++ The application must have at least 5 forms.
++ The application must have at least 10 web pages:
++ They can be created using function-based views or class-based views.
++ At least 5 of them must be class-based views.
 
 
-- The application must have at least 10 web pages:
+- Add at least 5 custom options (in total) to the admin interface (e.g., filters, list display,
+ordering, etc.).
 
-- They can be created using function-based views or class-based views.
-
-- At least 5 of them must be class-based views.
-
-- The application must have at least 5 independent models (models created by extending, inheritance,
-and one-to-one relation are considered one model).
-
-- The application must have at least 5 forms.
 
 - Optionally, you can utilize multiple storage systems (e.g., files, other Web services, and databases
 like PostgreSQL/MySQL/MariaDB/Oracle, etc.)

@@ -24,3 +24,5 @@ class LogisticsOrManagerRequiredMixin(GroupRequiredMixin):
 
 class LogisticsOrLegalRequiredMixin(GroupRequiredMixin):
     allowed_groups = ['Logistics', 'Logistics Manager', 'Legal']
+
+

@@ -40,3 +40,4 @@ class ContractForm(forms.ModelForm):
             'signed_date': forms.DateInput(attrs={'type': 'date'}),
             'expiry_date': forms.DateInput(attrs={'type': 'date'}),
         }
+
