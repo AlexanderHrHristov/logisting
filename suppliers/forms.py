@@ -1,10 +1,7 @@
 from django import forms
+from .models import Supplier, Contract, DeliverySchedule
+#from internationalflavor.vat_number.forms import VATNumberFormField
 
-from datetime import date
-
-from internationalflavor.vat_number.forms import VATNumberFormField
-
-from suppliers.models import Supplier, Contract, DeliverySchedule
 
 
 class SupplierForm(forms.ModelForm):
@@ -41,21 +38,21 @@ class ContractForm(forms.ModelForm):
             'expiry_date': forms.DateInput(attrs={'type': 'date'}),
         }
 
-
-
 class DeliveryScheduleForm(forms.ModelForm):
     class Meta:
         model = DeliverySchedule
-        fields = ['day', 'time_slot', 'supplier', 'logistics_responsible', 'note']
+        fields = ['supplier', 'day', 'hour']
 
-    def clean(self):
-        cleaned_data = super().clean()
-        day = cleaned_data.get('day')
-        time_slot = cleaned_data.get('time_slot')
+    def clean_hour(self):
+        value = self.cleaned_data.get('hour')  # това вече е datetime.time обект
 
-        if day and time_slot:
-            count = DeliverySchedule.objects.filter(day=day, time_slot=time_slot).count()
-            # Ако е създаване (няма pk) и вече има 8 записи
-            if self.instance.pk is None and count >= 8:
-                raise forms.ValidationError("Този слот вече е запълнен с максимален брой доставчици (8).")
-        return cleaned_data
+        if value is None:
+            raise forms.ValidationError("Моля, въведете валиден час за доставка.")
+
+        # Пример за проверка: да не е в миналото
+        import datetime
+        now_time = datetime.datetime.now().time()
+        if value < now_time:
+            raise forms.ValidationError("Часът за доставка не може да е преди текущия час.")
+
+        return value

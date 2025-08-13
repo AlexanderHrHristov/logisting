@@ -1,13 +1,48 @@
 {% extends "base.html" %}
 {% block content %}
-<h1>{% if form.instance.pk %}Редактирай график{% else %}Добави нов график{% endif %}</h1>
 
-<form method="post">
-  {% csrf_token %}
-  {{ form.as_p }}
-  <button type="submit">Запази</button>
-  <a href="{% url 'suppliers:delivery_schedule_list' %}">Отказ</a>
+<div class="container mt-4">
+    <h2 class="mb-4" style="color: white; font-weight: bold;">Добави нова доставка</h2>
 
-</form>
+    <form method="post">
+        {% csrf_token %}
+
+        <div class="mb-3">
+            <label for="id_day" class="form-label">Ден</label>
+            {{ form.day }}
+            {% if form.day.errors %}
+                <div class="text-danger">{{ form.day.errors }}</div>
+            {% endif %}
+        </div>
+
+       <div class="mb-3 col-3">
+          <label for="id_hour" class="form-label">Час за доставка</label>
+          {{ form.hour }}
+          {% if form.hour.errors %}
+              <div class="text-danger">{{ form.hour.errors }}</div>
+          {% endif %}
+      </div>
+
+
+        <div class="mb-3">
+            <label for="id_supplier" class="form-label">Доставчик</label>
+            {{ form.supplier }}
+            {% if form.supplier.errors %}
+                <div class="text-danger">{{ form.supplier.errors }}</div>
+            {% endif %}
+        </div>
+
+        <div class="mb-3">
+            <label for="id_note" class="form-label">Бележки</label>
+            {{ form.note }}
+            {% if form.note.errors %}
+                <div class="text-danger">{{ form.note.errors }}</div>
+            {% endif %}
+        </div>
+
+        <button type="submit" class="btn btn-primary">Запази</button>
+        <a href="{% url 'suppliers:delivery_schedule_list' %}" class="btn btn-secondary">Отказ</a>
+    </form>
+</div>
 
 {% endblock %}

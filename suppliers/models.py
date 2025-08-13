@@ -1,8 +1,8 @@
 from datetime import timezone
 
+from django.db import models
 import django_filters
 from django.core.exceptions import ValidationError
-from django.db import models
 from django.db.models import Q
 from django import forms
 from internationalflavor.vat_number.validators import VATNumberValidator
@@ -67,8 +67,9 @@ class Supplier(models.Model):
         limit_choices_to=Q(groups__name='Logistics') | Q(groups__name='Logistics Manager'),
         related_name='suppliers_responsible',
         verbose_name="Отговорен логистик"
-
     )
+
+
     is_active = models.BooleanField(default=True)
 
     def __str__(self):
@@ -133,30 +134,27 @@ class Contract(models.Model):
         return f"Договор {self.contract_type} – {self.supplier.name} ({self.is_active})"
 
 
+
+
+
 class DeliverySchedule(models.Model):
-    DAYS_OF_WEEK = [
-        ('mon', 'Monday'),
-        ('tue', 'Tuesday'),
-        ('wed', 'Wednesday'),
-        ('thu', 'Thursday'),
-        ('fri', 'Friday'),
-    ]
-
-    TIME_SLOTS = [
-        ('08-10', '08:00-10:00'),
-        ('10-12', '10:00-12:00'),
-        ('12-14', '12:00-14:00'),
-        ('14-16', '14:00-16:00'),
-    ]
-
-    day = models.CharField(max_length=3, choices=DAYS_OF_WEEK)
-    time_slot = models.CharField(max_length=5, choices=TIME_SLOTS)
-    supplier = models.ForeignKey('suppliers.Supplier', on_delete=models.CASCADE, related_name='delivery_schedules')
-    logistics_responsible = models.ForeignKey('suppliers.Supplier', on_delete=models.CASCADE, related_name='logistics_schedules')
+    date = models.DateField()
+    hour = models.TimeField()
+    
+    supplier = models.ForeignKey(
+        'suppliers.Supplier',
+        on_delete=models.CASCADE,
+        related_name='delivery_schedules'
+    )
+    
     note = models.CharField(max_length=150, blank=True)
 
     class Meta:
-        unique_together = ('day', 'time_slot', 'supplier')
+        unique_together = ('date', 'hour', 'supplier')
+
+    @property
+    def logistics_responsible(self):
+        return self.supplier.responsible_logistic
 
     def __str__(self):
-        return f"{self.get_day_display()} {self.get_time_slot_display()} - {self.supplier}"
+        return f"{self.date.strftime('%d.%m.%Y')} {self.hour.strftime('%H:%M')} - {self.supplier}"

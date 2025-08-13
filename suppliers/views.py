@@ -10,10 +10,12 @@ from logisting.mixins import (
     LogisticsManagerRequiredMixin,
     LogisticsOrManagerRequiredMixin,
 )
+from django.utils import timezone
+import datetime
 from .filters import SupplierFilter, ContractFilter
 from django.shortcuts import redirect, get_object_or_404
 
-
+# Suppliers Register Views
 
 class SupplierListView(LoginRequiredMixin, LegalOnlyMixin, LogisticsOrManagerRequiredMixin, FilterView):
     model = Supplier
@@ -52,6 +54,8 @@ class SupplierDeleteView(LoginRequiredMixin, LogisticsManagerRequiredMixin, Dele
         messages.success(request, 'Доставчикът беше изтрит успешно.')
         return super().delete(request, *args, **kwargs)
 
+
+# Contracts Register Views
 
 class ContractListView(LoginRequiredMixin, UserPassesTestMixin, ListView):
     model = Contract
@@ -105,17 +109,48 @@ class ContractDeleteView(LoginRequiredMixin, UserPassesTestMixin, View):
         return redirect('suppliers:contract-list')
 
 
-class DeliveryScheduleListView(LoginRequiredMixin, ListView):
-    model = DeliverySchedule
-    template_name = 'suppliers/templates/delivery_schedule.html'
-    context_object_name = 'schedules'
+# DeliverySchedule - Views
 
-    def get_queryset(self):
-        qs = super().get_queryset()
-        day = self.request.GET.get('day')
-        if day:
-            qs = qs.filter(day=day)
-        return qs.order_by('day', 'time_slot')
+
+class DeliveryScheduleCalendarView(LoginRequiredMixin, ListView):
+    model = DeliverySchedule
+    template_name = 'suppliers/delivery_schedule_calendar.html'
+    context_object_name = 'calendar'
+
+    DAY_MAP = {
+        'mon': 0,
+        'tue': 1,
+        'wed': 2,
+        'thu': 3,
+        'fri': 4,
+    }
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        today = timezone.localdate()
+        end_date = today + datetime.timedelta(days=14)
+        qs = self.model.objects.select_related('supplier')
+
+        calendar = {}
+
+        current_date = today
+        while current_date <= end_date:
+            weekday = current_date.weekday()
+            day_schedules = []
+
+            for schedule in qs:
+                if self.DAY_MAP[schedule.day] == weekday:
+                    # добавяме динамично поле date
+                    schedule.date = current_date
+                    day_schedules.append(schedule)
+
+            if day_schedules:
+                calendar[current_date] = sorted(day_schedules, key=lambda s: s.hour)
+
+            current_date += datetime.timedelta(days=1)
+
+        context['calendar'] = calendar
+        return context
 
 
 class DeliveryScheduleCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
@@ -129,6 +164,14 @@ class DeliveryScheduleCreateView(LoginRequiredMixin, UserPassesTestMixin, Create
         if user.is_superuser:
             return True
         return user.groups.filter(name__in=['Logistics', 'Logistics.manager']).exists()
+
+    def form_valid(self, form):
+        """
+        Вече не присвояваме логистичен отговорник ръчно,
+        тъй като това е property и се взема от доставчика.
+        """
+        # form.instance.logistics_responsible = self.request.user  # премахнато
+        return super().form_valid(form)
 
 
 class DeliveryScheduleUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
