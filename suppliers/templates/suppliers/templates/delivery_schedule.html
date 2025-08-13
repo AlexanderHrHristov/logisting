@@ -1,52 +1,42 @@
 {% extends "base.html" %}
-{% load static %}
 {% block content %}
-
 <div class="container mt-4">
-    <h2 class="mb-4" style="color: white; font-weight: bold;">🗓️ Седмичен график за доставки</h2>
+    <h2 class="mb-4">🗓️ Седмичен график за доставки</h2>
 
-    <!-- Филтър по ден -->
-    <form method="get" class="row g-3 mb-4 align-items-end">
-        <div class="col-auto">
-            <label for="day" class="form-label">Филтрирай по ден:</label>
-            <select name="day" id="day" class="form-select form-select-sm">
-                <option value="">Всички</option>
-                {% for value, label in schedules.model.DAY_CHOICES %}
-                    <option value="{{ value }}" {% if request.GET.day == value %}selected{% endif %}>{{ label }}</option>
-                {% endfor %}
-            </select>
-        </div>
-        <div class="col-auto">
-            <button type="submit" class="btn btn-sm btn-primary">Филтрирай</button>
-        </div>
-    </form>
-
-    <!-- Таблица с график -->
     <div class="table-responsive">
         <table class="table table-striped table-hover align-middle">
             <thead class="table-dark">
                 <tr>
-                    <th>Ден</th>
+                    <th>Дата</th>
                     <th>Час за доставка</th>
+                    <th>Доставчик</th>
                     <th>Бележки</th>
-                    <th>Отговорен логистик</th> 
+                    <th>Отговорен логистик</th>
                     <th class="text-center">Действия</th>
                 </tr>
             </thead>
             <tbody>
                 {% for schedule in schedules %}
                 <tr>
-                    <td>{{ schedule.get_day_display }}</td>
-                    <td>{{ schedule.hour|time:"h:i A" }}</td>
+                    <td>{{ schedule.date }}</td>
+                    <td>{{ schedule.hour|time:"H:i" }}</td>
+                    <td>{{ schedule.supplier.name }}</td>
                     <td>{{ schedule.note|default:"-" }}</td>
-                    <td>{{ schedule.logistics_responsible.get_full_name|default:schedule.logistics_responsible.username }}</td>
+                    <td>
+                        {% if supplier.responsible_logistic %}
+                            {{ supplier.responsible_logistic.get_full_name|default:supplier.responsible_logistic.username }}
+                        {% else %}
+                            -
+                        {% endif %}
+                    </td>
+
                     <td class="text-center">
                         <a href="{% url 'suppliers:delivery_schedule_update' schedule.pk %}" class="btn btn-sm btn-warning">Редактирай</a>
                     </td>
                 </tr>
                 {% empty %}
                 <tr>
-                    <td colspan="5" class="text-center text-muted">Няма записи</td>
+                    <td colspan="6" class="text-center text-muted">Няма записи</td>
                 </tr>
                 {% endfor %}
             </tbody>
@@ -55,5 +45,4 @@
 
     <a href="{% url 'suppliers:delivery_schedule_create' %}" class="btn btn-primary mt-3">➕ Добави нова доставка</a>
 </div>
-
 {% endblock %}

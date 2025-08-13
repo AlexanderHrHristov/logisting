@@ -1,12 +1,8 @@
 from datetime import timezone
-
+from django.contrib.auth import get_user_model
 from django.db import models
-import django_filters
 from django.core.exceptions import ValidationError
 from django.db.models import Q
-from django import forms
-from internationalflavor.vat_number.validators import VATNumberValidator
-
 from django.conf import settings
 from users.models import AppUser
 
@@ -68,7 +64,6 @@ class Supplier(models.Model):
         related_name='suppliers_responsible',
         verbose_name="Отговорен логистик"
     )
-
 
     is_active = models.BooleanField(default=True)
 
@@ -134,27 +129,17 @@ class Contract(models.Model):
         return f"Договор {self.contract_type} – {self.supplier.name} ({self.is_active})"
 
 
-
+User = get_user_model()
 
 
 class DeliverySchedule(models.Model):
-    date = models.DateField()
+    supplier = models.ForeignKey('suppliers.Supplier', on_delete=models.CASCADE, related_name='deliveries')
     hour = models.TimeField()
-    
-    supplier = models.ForeignKey(
-        'suppliers.Supplier',
-        on_delete=models.CASCADE,
-        related_name='delivery_schedules'
-    )
-    
-    note = models.CharField(max_length=150, blank=True)
+    note = models.TextField(blank=True, null=True)
+    logistics_responsible = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
 
     class Meta:
-        unique_together = ('date', 'hour', 'supplier')
-
-    @property
-    def logistics_responsible(self):
-        return self.supplier.responsible_logistic
+        ordering = ['hour']
 
     def __str__(self):
-        return f"{self.date.strftime('%d.%m.%Y')} {self.hour.strftime('%H:%M')} - {self.supplier}"
+        return f"{self.supplier.name} – {self.hour.strftime('%H:%M')}"

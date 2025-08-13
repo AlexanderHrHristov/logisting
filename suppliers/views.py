@@ -10,10 +10,9 @@ from logisting.mixins import (
     LogisticsManagerRequiredMixin,
     LogisticsOrManagerRequiredMixin,
 )
-from django.utils import timezone
-import datetime
 from .filters import SupplierFilter, ContractFilter
 from django.shortcuts import redirect, get_object_or_404
+
 
 # Suppliers Register Views
 
@@ -111,77 +110,31 @@ class ContractDeleteView(LoginRequiredMixin, UserPassesTestMixin, View):
 
 # DeliverySchedule - Views
 
-
-class DeliveryScheduleCalendarView(LoginRequiredMixin, ListView):
+class DeliveryScheduleListView(LoginRequiredMixin, ListView):
     model = DeliverySchedule
-    template_name = 'suppliers/delivery_schedule_calendar.html'
-    context_object_name = 'calendar'
+    template_name = 'suppliers/templates/delivery_schedule.html'
+    context_object_name = 'schedules'
 
-    DAY_MAP = {
-        'mon': 0,
-        'tue': 1,
-        'wed': 2,
-        'thu': 3,
-        'fri': 4,
-    }
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        today = timezone.localdate()
+    def get_queryset(self):
+        # Филтрираме само доставките за следващите 2 седмици и работните дни
+        import datetime
+        today = datetime.date.today()
         end_date = today + datetime.timedelta(days=14)
-        qs = self.model.objects.select_related('supplier')
-
-        calendar = {}
-
-        current_date = today
-        while current_date <= end_date:
-            weekday = current_date.weekday()
-            day_schedules = []
-
-            for schedule in qs:
-                if self.DAY_MAP[schedule.day] == weekday:
-                    # добавяме динамично поле date
-                    schedule.date = current_date
-                    day_schedules.append(schedule)
-
-            if day_schedules:
-                calendar[current_date] = sorted(day_schedules, key=lambda s: s.hour)
-
-            current_date += datetime.timedelta(days=1)
-
-        context['calendar'] = calendar
-        return context
+        return DeliverySchedule.objects.filter(
+            hour__gte=datetime.time(8, 0),
+            hour__lte=datetime.time(17, 0)
+        ).order_by('hour')
 
 
-class DeliveryScheduleCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
+class DeliveryScheduleCreateView(LoginRequiredMixin, CreateView):
     model = DeliverySchedule
     form_class = DeliveryScheduleForm
     template_name = 'suppliers/templates/delivery_schedule_form.html'
-    success_url = reverse_lazy('delivery_schedule_list')
-
-    def test_func(self):
-        user = self.request.user
-        if user.is_superuser:
-            return True
-        return user.groups.filter(name__in=['Logistics', 'Logistics.manager']).exists()
-
-    def form_valid(self, form):
-        """
-        Вече не присвояваме логистичен отговорник ръчно,
-        тъй като това е property и се взема от доставчика.
-        """
-        # form.instance.logistics_responsible = self.request.user  # премахнато
-        return super().form_valid(form)
+    success_url = reverse_lazy('suppliers:delivery_schedule_list')
 
 
-class DeliveryScheduleUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+class DeliveryScheduleUpdateView(LoginRequiredMixin, UpdateView):
     model = DeliverySchedule
     form_class = DeliveryScheduleForm
     template_name = 'suppliers/templates/delivery_schedule_form.html'
-    success_url = reverse_lazy('delivery_schedule_list')
-
-    def test_func(self):
-        user = self.request.user
-        if user.is_superuser:
-            return True
-        return user.groups.filter(name__in=['Logistics', 'Logistics.manager']).exists()
+    success_url = reverse_lazy('suppliers:delivery_schedule_list')

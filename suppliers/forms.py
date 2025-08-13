@@ -1,6 +1,6 @@
 from django import forms
 from .models import Supplier, Contract, DeliverySchedule
-#from internationalflavor.vat_number.forms import VATNumberFormField
+from django.contrib.auth import get_user_model
 
 
 
@@ -13,7 +13,7 @@ class SupplierForm(forms.ModelForm):
             'email',
             'phone',
             'contact_person',
-            'delivery_method',       # Тук трябва да е точно това име
+            'delivery_method',  # Тук трябва да е точно това име
             'responsible_logistic',
             'is_active',
         ]
@@ -38,21 +38,36 @@ class ContractForm(forms.ModelForm):
             'expiry_date': forms.DateInput(attrs={'type': 'date'}),
         }
 
+
+
+
+User = get_user_model()
+
+
 class DeliveryScheduleForm(forms.ModelForm):
+    date = forms.DateField(
+        widget=forms.Select(),
+        label="Дата на доставка"
+    )
+
     class Meta:
         model = DeliverySchedule
-        fields = ['supplier', 'day', 'hour']
+        fields = ['supplier', 'date', 'hour', 'note', 'logistics_responsible']
+        widgets = {
+            'hour': forms.TimeInput(attrs={'type': 'time', 'min': '08:00', 'max': '17:00'}),
+            'note': forms.Textarea(attrs={'rows': 2}),
+            'supplier': forms.Select(),
+            'logistics_responsible': forms.Select(),
+        }
 
-    def clean_hour(self):
-        value = self.cleaned_data.get('hour')  # това вече е datetime.time обект
-
-        if value is None:
-            raise forms.ValidationError("Моля, въведете валиден час за доставка.")
-
-        # Пример за проверка: да не е в миналото
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Генериране на дати за следващите 2 седмици (само работни дни)
         import datetime
-        now_time = datetime.datetime.now().time()
-        if value < now_time:
-            raise forms.ValidationError("Часът за доставка не може да е преди текущия час.")
-
-        return value
+        today = datetime.date.today()
+        dates = []
+        for i in range(14):  # 2 седмици
+            day = today + datetime.timedelta(days=i)
+            if day.weekday() < 5:  # 0=пон, 4=пет
+                dates.append((day, day.strftime("%A, %d %b %Y")))
+        self.fields['date'].widget.choices = dates
