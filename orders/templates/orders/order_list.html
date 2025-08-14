@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>📦 Поръчки</h2>
+    <a href="{% url 'orders:create' %}" class="btn btn-primary mb-3">➕ Нова поръчка</a>
+
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th style="width: 24%;">Доставчик</th>
+                <th style="width: 8%;">Дата</th>
+                <th style="width: 8%;">Статус</th>
+                <th style="width: 45%;">Бележка</th>
+                <th style="width: 15%;">Действия</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for order in object_list %}
+            <tr>
+                <td>{{ order.supplier }}</td>
+                <td>{{ order.order_date|date:"d/m/Y" }}</td>
+                <td>{{ order.get_status_display }}</td>
+                <td>{{ order.note }}</td>
+                <td>
+                    <a href="{% url 'orders:update' order.pk %}" class="btn btn-sm btn-warning">Редактирай</a>
+                    <a href="{% url 'orders:delete' order.pk %}" class="btn btn-sm btn-danger">Изтрий</a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="5">Няма поръчки.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

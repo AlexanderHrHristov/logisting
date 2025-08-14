@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container mt-4">
+    <h2>Изтриване на поръчка</h2>
+    <p class="text-white">Сигурни ли сте, че искате да изтриете поръчката към {{ object.supplier.name }} направена на {{ object.order_date }}?</p>
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">Изтрий</button>
+        <a href="{% url 'orders:list' %}" class="btn btn-secondary">Назад</a>
+    </form>
+</div>
+{% endblock %}

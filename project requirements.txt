@@ -26,22 +26,23 @@ according to the project's functionality.
 + Unauthenticated users (public part) have only 'get' permissions, e.g., landing page, details,
 about page, and login/register 'post' permissions.
 + The application must have at least 5 forms.
++ The application must have a customized admin site (accessible only by admins):
++ The application must have at least 5 independent models (models created by extending, inheritance,
+and one-to-one relation are considered one model). 
++ Implement Exception Handling and Data Validation to avoid crashes when invalid data is
+entered (both client-side and server-side)
++ You must implement a new "main" functionality! It is considered two additional views with
+CRUD operations that extend your current project. This should be done for a logged-in user.
 
 
 
-- The application must have a customized admin site (accessible only by admins):
 
 - Add at least 5 custom options (in total) to the admib interface (e.g. filters, list display,
 ordering, etc.).
 
-- The application must have at least 5 independent models (models created by extending, inheritance,
-and one-to-one relation are considered one model).
 
 - Optionally, you can utilize multiple storage systems (e.g., files, other Web services, and databases
 like PostgreSQL/MySQL/MariaDB/Oracle, etc.)
 
-- Implement Exception Handling and Data Validation to avoid crashes when invalid data is
-entered (both client-side and server-side)
 
-- You must implement a new "main" functionality! It is considered two additional views with
-CRUD operations that extend your current project. This should be done for a logged-in user.
+

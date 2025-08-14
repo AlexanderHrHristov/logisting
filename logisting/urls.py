@@ -10,5 +10,6 @@ urlpatterns = [
     path('', include('core.urls', namespace='core')),    # Home, About, Contact
     path('users/', include(('users.urls', 'users'), namespace='users')),
     path('suppliers/', include('suppliers.urls')),
-    path('login/', auth_views.LoginView.as_view(template_name='users/login.html'), name='login')
+    path('orders/', include('orders.urls', namespace='orders')),
+    path('login/', auth_views.LoginView.as_view(template_name='users/login.html'), name='login'),
 ]

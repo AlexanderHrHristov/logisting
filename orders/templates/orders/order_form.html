@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>{{ view.object|default:"Нова поръчка" }}</h2>
+    <form method="post">
+        {% csrf_token %}
+
+        <!-- Кутия за първите два полета -->
+        <div class="p-3 mb-3 border rounded" style="max-width: 500px; background-color: #1b1b1b; align-self: start;">
+            <div class="row mb-3">
+                <div class="col-md-6 text-start">
+                    {{ form.supplier.label_tag }}
+                    {{ form.supplier }}
+                </div>
+                <div class="col-md-6 text-start">
+                    {{ form.order_date.label_tag }}
+                    {{ form.order_date }}
+                </div>
+            </div>
+        </div>
+
+        <!-- Отделни полета -->
+        <div class="mb-3" style="max-width: 600px;">
+            {{ form.status.label_tag }}
+            {{ form.status }}
+        </div>
+
+        <div class="mb-3" style="max-width: 600px;">
+            {{ form.note.label_tag }}
+            {{ form.note }}
+        </div>
+
+        <button type="submit" class="btn btn-success">Запази</button>
+        <a href="{% url 'orders:list' %}" class="btn btn-secondary">Назад</a>
+    </form>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<!-- Flatpickr CSS & JS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    flatpickr(".datepicker", {
+        dateFormat: "d/m/Y",
+        allowInput: true,
+    });
+});
+</script>
+{% endblock %}

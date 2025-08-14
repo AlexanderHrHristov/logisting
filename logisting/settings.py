@@ -40,6 +40,7 @@ MY_APPS = [
     'suppliers.apps.SuppliersConfig',
     'django_filters',
     "internationalflavor",
+    'orders.apps.OrdersConfig',
 ]   
 
 INSTALLED_APPS = [

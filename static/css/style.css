@@ -128,4 +128,9 @@ h2 {
   align-self: flex-end; /* бутонът да се подравни по дъното */
 }
 
+.datepicker {
+    max-width: 200px;
+    width: 100%;
+    margin-left: 0;  /* подравняване вляво */
+}
 
