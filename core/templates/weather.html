@@ -1,8 +1,16 @@
-<div class="weather-widget">
-    {% if weather.error %}
-        <span>{{ weather.error }}</span>
-    {% else %}
-        <img src="https://openweathermap.org/img/wn/{{ weather.icon }}.png" alt="Weather">
-        <span>{{ weather.temp }}°C</span>
-    {% endif %}
+<div id="weather-widget">
+    <img id="weather-icon" src="" alt="Weather">
+    <span id="weather-temp"></span>
+    <small id="weather-desc"></small>
 </div>
+
+<script>
+const apiKey = "78c2e7b31ebbd2cad939a3e0f3eab816";
+fetch(`https://api.openweathermap.org/data/2.5/weather?q=Sofia&appid=${apiKey}&units=metric&lang=bg`)
+.then(res => res.json())
+.then(data => {
+    document.getElementById('weather-temp').textContent = data.main.temp + "°C";
+    document.getElementById('weather-desc').textContent = data.weather[0].description;
+    document.getElementById('weather-icon').src = `https://openweathermap.org/img/wn/${data.weather[0].icon}.png`;
+});
+</script>

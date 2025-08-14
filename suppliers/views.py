@@ -13,12 +13,8 @@ from logisting.mixins import (
 from .filters import SupplierFilter, ContractFilter
 from django.shortcuts import redirect, get_object_or_404
 from django.contrib.auth import get_user_model
-from datetime import date, timedelta
-from django.views.generic import ListView
-from django.contrib.auth.mixins import LoginRequiredMixin
-from django.utils.dateparse import parse_date
-from .models import DeliverySchedule, Supplier
-from django.contrib.auth.models import User
+
+
 
 User = get_user_model()
 
@@ -28,7 +24,7 @@ User = get_user_model()
 
 class SupplierListView(LoginRequiredMixin, LegalOnlyMixin, LogisticsOrManagerRequiredMixin, FilterView):
     model = Supplier
-    template_name = 'suppliers/templates/supplier_list.html'
+    template_name = 'suppliers/supplier_list.html'
     context_object_name = 'suppliers'
     paginate_by = 20
     filterset_class = SupplierFilter
@@ -121,77 +117,60 @@ class ContractDeleteView(LoginRequiredMixin, UserPassesTestMixin, View):
 # DeliverySchedule - Views
 
 
-class DeliveryScheduleListView(LoginRequiredMixin, ListView):
+class DeliveryScheduleListView(ListView):
     model = DeliverySchedule
-    template_name = 'suppliers/templates/delivery_schedule.html'
-    context_object_name = 'schedules'
+    template_name = "suppliers/delivery_schedule.html"
+    context_object_name = "schedules"
 
     def get_queryset(self):
-        today = date.today()
-        end_date = today + timedelta(days=14)
+        qs = DeliverySchedule.objects.select_related('supplier', 'supplier__responsible_logistic').all()
 
-        # Базова заявка: следващите 2 седмици, select_related за оптимизация
-        qs = DeliverySchedule.objects.select_related(
-            'supplier',
-            'supplier__responsible_logistic'
-        ).filter(
-            date__range=(today, end_date)
-        ).order_by('date', 'hour')
+        date = self.request.GET.get('date')
+        supplier = self.request.GET.get('supplier')
 
-        # Филтри от GET параметри
-        date_filter = self.request.GET.get('date')
-        supplier_filter = self.request.GET.get('supplier')
-
-        if date_filter:
-            # parse_date очаква YYYY-MM-DD формат
-            date_obj = parse_date(date_filter)
-            if date_obj:
+        if date:
+            try:
+                date_obj = datetime.strptime(date, "%Y-%m-%d").date()
                 qs = qs.filter(date=date_obj)
+            except ValueError:
+                pass  # игнорирай грешни дати
 
-        if supplier_filter:
-            qs = qs.filter(supplier_id=supplier_filter)
+        if supplier:
+            try:
+                qs = qs.filter(supplier_id=int(supplier))
+            except ValueError:
+                pass  # игнорирай грешни id-та
 
-        return qs
+        return qs.order_by('date', 'hour')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        # Работни дни за следващите 2 седмици (само делнични)
-        today = date.today()
-        workdays = [
-            today + timedelta(days=i)
-            for i in range(14)
-            if (today + timedelta(days=i)).weekday() < 5
-        ]
-        context['workdays'] = workdays
-
-        # Всички доставчици
+        # Списък с всички доставчици за филтъра
         context['suppliers'] = Supplier.objects.all()
 
-        # Всички логистици (от група Logistics)
-        context['logistics'] = User.objects.filter(groups__name='Logistics')
+        # Уникални дати за филтъра
+        dates = DeliverySchedule.objects.order_by('date').values_list('date', flat=True).distinct()
+        context['workdays'] = dates
 
-        # Групиране на доставките по дата
-        queryset = self.get_queryset()
+        # Групиране по дата за таблицата
         schedules_by_day = {}
-        for day in workdays:
-            schedules_by_day[day] = queryset.filter(date=day)
+        for schedule in context['schedules']:
+            schedules_by_day.setdefault(schedule.date, []).append(schedule)
         context['schedules_by_day'] = schedules_by_day
 
         return context
 
 
-class DeliveryScheduleCreateView(LoginRequiredMixin, CreateView):
-    pass
-    # model = DeliverySchedule
-    # form_class = DeliveryScheduleForm
-    # template_name = 'suppliers/templates/delivery_schedule_form.html'
-    # success_url = reverse_lazy('suppliers:delivery_schedule_list')
+class DeliveryScheduleCreateView(CreateView):
+    model = DeliverySchedule
+    form_class = DeliveryScheduleForm
+    template_name = "suppliers/delivery_schedule_form.html"
+    success_url = reverse_lazy('suppliers:delivery_schedule_list')
 
 
-class DeliveryScheduleUpdateView(LoginRequiredMixin, UpdateView):
-    pass
-    # model = DeliverySchedule
-    # form_class = DeliveryScheduleForm
-    # template_name = 'suppliers/templates/delivery_schedule_form.html'
-    # success_url = reverse_lazy('suppliers:delivery_schedule_list')
+class DeliveryScheduleUpdateView(UpdateView):
+    model = DeliverySchedule
+    form_class = DeliveryScheduleForm
+    template_name = "suppliers/delivery_schedule_form.html"
+    success_url = reverse_lazy('suppliers:delivery_schedule_list')

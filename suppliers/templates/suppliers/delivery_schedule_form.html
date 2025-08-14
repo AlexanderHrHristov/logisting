@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container mt-4">
+    <h2 class="mb-3">
+        {% if object %}Редакция на доставка{% else %}Добавяне на нова доставка{% endif %}
+    </h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.non_field_errors }}
+        <div class="mb-3">
+            {{ form.date.label_tag }}
+            {{ form.date }}
+            {{ form.date.errors }}
+        </div>
+        <div class="mb-3">
+            {{ form.hour.label_tag }}
+            {{ form.hour }}
+            {{ form.hour.errors }}
+        </div>
+        <div class="mb-3">
+            {{ form.supplier.label_tag }}
+            {{ form.supplier }}
+            {{ form.supplier.errors }}
+        </div>
+        <div class="mb-3">
+            {{ form.note.label_tag }}
+            {{ form.note }}
+            {{ form.note.errors }}
+        </div>
+        <button type="submit" class="btn btn-primary">
+            {% if object %}Запази промени{% else %}Добави{% endif %}
+        </button>
+        <a href="{% url 'suppliers:delivery_schedule_list' %}" class="btn btn-secondary">Откажи</a>
+    </form>
+</div>
+{% endblock %}
