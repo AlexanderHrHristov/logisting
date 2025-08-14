@@ -135,6 +135,7 @@ User = get_user_model()
 class DeliverySchedule(models.Model):
     supplier = models.ForeignKey('suppliers.Supplier', on_delete=models.CASCADE, related_name='deliveries')
     hour = models.TimeField()
+    date = models.DateField()
     note = models.TextField(blank=True, null=True)
     logistics_responsible = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
 

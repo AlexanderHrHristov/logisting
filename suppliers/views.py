@@ -12,6 +12,9 @@ from logisting.mixins import (
 )
 from .filters import SupplierFilter, ContractFilter
 from django.shortcuts import redirect, get_object_or_404
+from datetime import date, timedelta
+
+from django.views.generic import ListView
 
 
 # Suppliers Register Views
@@ -110,21 +113,41 @@ class ContractDeleteView(LoginRequiredMixin, UserPassesTestMixin, View):
 
 # DeliverySchedule - Views
 
+
 class DeliveryScheduleListView(LoginRequiredMixin, ListView):
     model = DeliverySchedule
     template_name = 'suppliers/templates/delivery_schedule.html'
     context_object_name = 'schedules'
 
     def get_queryset(self):
-        # Филтрираме само доставките за следващите 2 седмици и работните дни
-        import datetime
-        today = datetime.date.today()
-        end_date = today + datetime.timedelta(days=14)
-        return DeliverySchedule.objects.filter(
-            hour__gte=datetime.time(8, 0),
-            hour__lte=datetime.time(17, 0)
-        ).order_by('hour')
+        # Връща всички доставки за следващите 2 седмици, само работни дни
+        today = date.today()
+        end_date = today + timedelta(days=14)
+        return DeliverySchedule.objects.select_related('supplier__responsible_logistic') \
+            .filter(date__range=(today, end_date)) \
+            .order_by('date', 'hour')
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        # Генерираме работни дни за следващите 2 седмици
+        today = date.today()
+        workdays = []
+        for i in range(14):
+            d = today + timedelta(days=i)
+            if d.weekday() < 5:  # 0=понеделник, 6=неделя
+                workdays.append(d)
+
+        # Групираме доставките по дата
+        schedules_by_day = {}
+        for day in workdays:
+            day_schedules = self.get_queryset().filter(date=day)
+            schedules_by_day[day] = day_schedules
+
+        context['schedules_by_day'] = schedules_by_day
+        return context
+  
+    
 
 class DeliveryScheduleCreateView(LoginRequiredMixin, CreateView):
     model = DeliverySchedule
