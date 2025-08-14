@@ -2,6 +2,8 @@ from django.shortcuts import render, redirect
 from django.core.mail import send_mail
 from django.contrib import messages
 from .forms import ContactForm
+import requests
+from django.shortcuts import render
 
 
 def home(request):
@@ -37,3 +39,27 @@ def contact(request):
 
     return render(request, 'contact.html', {'form': form})
 
+
+
+def home_view(request):
+    city = "Sofia"
+    api_key = "78c2e7b31ebbd2cad939a3e0f3eab816"  # или settings.OPENWEATHER_API_KEY
+    url = f"https://api.openweathermap.org/data/2.5/weather?q={city}&appid={api_key}&units=metric&lang=bg"
+
+    weather_data = {}
+    try:
+        response = requests.get(url, timeout=5)
+        data = response.json()
+        if data.get("main"):
+            weather_data = {
+                "city": city,
+                "temp": round(data["main"]["temp"]),
+                "description": data["weather"][0]["description"].capitalize(),
+                "humidity": data["main"]["humidity"],
+            }
+        else:
+            weather_data = {"error": data.get("message", "Неуспешно зареждане на времето.")}
+    except Exception as e:
+        weather_data = {"error": f"Неуспешно зареждане на времето: {e}"}
+
+    return render(request, "core/home.html", {"weather": weather_data})

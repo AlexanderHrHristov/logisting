@@ -53,6 +53,15 @@
   </div>
 </nav>
 
+<div class="container mt-3 d-flex justify-content-end">
+
+<div class="weather-widget">
+    {% include "weather.html" %}
+</div>
+
+
+</div>
+
 {% if messages %}
   <div class="container mt-3">
     {% for message in messages %}

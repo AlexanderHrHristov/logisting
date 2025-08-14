@@ -145,7 +145,8 @@ STATICFILES_DIRS = [
     BASE_DIR / 'static',
 ]
 
-
+# settings.py
+OPENWEATHER_API_KEY = "78c2e7b31ebbd2cad939a3e0f3eab816"
 
 
 EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')

@@ -20,7 +20,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('order_date', models.DateField()),
-                ('status', models.CharField(choices=[('pending', 'Очакваща'), ('confirmed', 'Потвърдена'), ('delivered', 'Доставена')], default='pending', max_length=20)),
+                ('status', models.CharField(choices=[('pending', 'Изпратена'), ('confirmed', 'Потвърдена'), ('delivered', 'Доставена')], default='pending', max_length=20)),
                 ('note', models.TextField(blank=True)),
                 ('created_by', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, to=settings.AUTH_USER_MODEL)),
                 ('supplier', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='orders', to='suppliers.supplier')),
