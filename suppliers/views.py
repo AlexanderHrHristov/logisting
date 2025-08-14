@@ -12,10 +12,13 @@ from logisting.mixins import (
 )
 from .filters import SupplierFilter, ContractFilter
 from django.shortcuts import redirect, get_object_or_404
-from datetime import date, timedelta
-from django.utils.dateparse import parse_date
-from django.views.generic import ListView
 from django.contrib.auth import get_user_model
+from datetime import date, timedelta
+from django.views.generic import ListView
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.utils.dateparse import parse_date
+from .models import DeliverySchedule, Supplier
+from django.contrib.auth.models import User
 
 User = get_user_model()
 
@@ -117,6 +120,7 @@ class ContractDeleteView(LoginRequiredMixin, UserPassesTestMixin, View):
 
 # DeliverySchedule - Views
 
+
 class DeliveryScheduleListView(LoginRequiredMixin, ListView):
     model = DeliverySchedule
     template_name = 'suppliers/templates/delivery_schedule.html'
@@ -126,10 +130,10 @@ class DeliveryScheduleListView(LoginRequiredMixin, ListView):
         today = date.today()
         end_date = today + timedelta(days=14)
 
-        # Зареждаме свързаните обекти, включително логистика през доставчика
+        # Базова заявка: следващите 2 седмици, select_related за оптимизация
         qs = DeliverySchedule.objects.select_related(
             'supplier',
-            'supplier__responsible_logistic'  # <-- важно за да вземе логистика
+            'supplier__responsible_logistic'
         ).filter(
             date__range=(today, end_date)
         ).order_by('date', 'hour')
@@ -139,7 +143,11 @@ class DeliveryScheduleListView(LoginRequiredMixin, ListView):
         supplier_filter = self.request.GET.get('supplier')
 
         if date_filter:
-            qs = qs.filter(date=date_filter)
+            # parse_date очаква YYYY-MM-DD формат
+            date_obj = parse_date(date_filter)
+            if date_obj:
+                qs = qs.filter(date=date_obj)
+
         if supplier_filter:
             qs = qs.filter(supplier_id=supplier_filter)
 
@@ -164,8 +172,8 @@ class DeliveryScheduleListView(LoginRequiredMixin, ListView):
         context['logistics'] = User.objects.filter(groups__name='Logistics')
 
         # Групиране на доставките по дата
-        schedules_by_day = {}
         queryset = self.get_queryset()
+        schedules_by_day = {}
         for day in workdays:
             schedules_by_day[day] = queryset.filter(date=day)
         context['schedules_by_day'] = schedules_by_day

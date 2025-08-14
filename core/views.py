@@ -1,9 +1,8 @@
-from django.shortcuts import render, redirect
-from django.core.mail import send_mail
-from django.contrib import messages
-from .forms import ContactForm
-import requests
+from django.conf import settings
 from django.shortcuts import render
+import requests
+
+from core.forms import ContactForm
 
 
 def home(request):
@@ -40,26 +39,33 @@ def contact(request):
     return render(request, 'contact.html', {'form': form})
 
 
-
 def home_view(request):
     city = "Sofia"
-    api_key = "78c2e7b31ebbd2cad939a3e0f3eab816"  # или settings.OPENWEATHER_API_KEY
+    api_key = settings.OPENWEATHER_API_KEY  # взима ключа от settings.py
     url = f"https://api.openweathermap.org/data/2.5/weather?q={city}&appid={api_key}&units=metric&lang=bg"
 
     weather_data = {}
     try:
         response = requests.get(url, timeout=5)
+        response.raise_for_status()  # ще хвърли грешка ако статус код != 200
         data = response.json()
-        if data.get("main"):
+
+        if "main" in data:
             weather_data = {
                 "city": city,
-                "temp": round(data["main"]["temp"]),
+                "temp": round(data["main"]["temp"], 1),  # закръгляме температурата
                 "description": data["weather"][0]["description"].capitalize(),
                 "humidity": data["main"]["humidity"],
+                "icon": f"https://openweathermap.org/img/wn/{data['weather'][0]['icon']}@2x.png"
             }
         else:
-            weather_data = {"error": data.get("message", "Неуспешно зареждане на времето.")}
-    except Exception as e:
-        weather_data = {"error": f"Неуспешно зареждане на времето: {e}"}
+            weather_data = {
+                "error": data.get("message", "Неуспешно зареждане на времето.")
+            }
+
+    except requests.exceptions.RequestException as e:
+        weather_data = {
+            "error": f"Неуспешно зареждане на времето: {e}"
+        }
 
     return render(request, "core/home.html", {"weather": weather_data})
