@@ -1,9 +1,10 @@
-from datetime import datetime, date as dt_date
+from datetime import datetime, date as dt_date, timezone
 from django.contrib import messages
 from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse_lazy
+from django.utils import timezone
 from django.views.generic import (CreateView, DeleteView, ListView, UpdateView,
                                   View)
 from django_filters.views import FilterView
@@ -12,11 +13,12 @@ from logisting.mixins import (LegalOnlyMixin, LogisticsManagerRequiredMixin,
                               LogisticsOrManagerRequiredMixin)
 
 from .filters import ContractFilter, SupplierFilter
-from .forms import ContractForm, DeliveryScheduleForm, SupplierForm
-from .models import Contract, DeliverySchedule, Supplier
+from .forms import ContractForm, DeliveryScheduleForm, SupplierForm, PickupScheduleForm
+from .models import Contract, DeliverySchedule, Supplier, PickupSchedule
+
+
 
 User = get_user_model()
-
 
 
 # Suppliers Register Views
@@ -115,8 +117,6 @@ class ContractDeleteView(LoginRequiredMixin, UserPassesTestMixin, View):
 
 # DeliverySchedule - Views
 
-from datetime import date as dt_date, datetime
-
 class DeliveryScheduleListView(ListView):
     model = DeliverySchedule
     template_name = "suppliers/delivery_schedule.html"
@@ -173,7 +173,6 @@ class DeliveryScheduleListView(ListView):
         return context
 
 
-
 class DeliveryScheduleCreateView(CreateView):
     model = DeliverySchedule
     form_class = DeliveryScheduleForm
@@ -186,3 +185,53 @@ class DeliveryScheduleUpdateView(UpdateView):
     form_class = DeliveryScheduleForm
     template_name = "suppliers/delivery_schedule_form.html"
     success_url = reverse_lazy('suppliers:delivery_schedule_list')
+
+
+# PickSchedule - Views
+
+class PickupScheduleListView(ListView):
+    model = DeliverySchedule
+    template_name = "suppliers/pickup_schedule.html"
+    context_object_name = "schedules"
+
+    def get_queryset(self):
+        qs = DeliverySchedule.objects.select_related('supplier', 'logistics_responsible').filter(
+            supplier__delivery_method='pickup'
+        )
+
+        date = self.request.GET.get('date')
+        supplier = self.request.GET.get('supplier')
+
+        if date:
+            try:
+                from datetime import datetime
+                date_obj = datetime.strptime(date, "%Y-%m-%d").date()
+                qs = qs.filter(date=date_obj)
+            except ValueError:
+                pass
+
+        if supplier:
+            try:
+                qs = qs.filter(supplier_id=int(supplier))
+            except ValueError:
+                pass
+
+        # Скриваме минали дати по подразбиране
+        today = timezone.localdate()
+        qs = qs.filter(date__gte=today)
+
+        return qs.order_by('date', 'hour')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        # Всички доставчици с pickup метод
+        context['suppliers'] = Supplier.objects.filter(delivery_method='pickup')
+        
+        return context
+    
+    
+class PickupScheduleCreateView(CreateView):
+    model = PickupSchedule
+    form_class = PickupScheduleForm
+    template_name = "suppliers/pickup_schedule_form.html"
+    success_url = "/suppliers/pickup-schedule/"

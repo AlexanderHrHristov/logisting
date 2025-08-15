@@ -4,7 +4,8 @@ from .views import (ContractCreateView, ContractDeleteView, ContractListView,
                     ContractToggleActiveView, ContractUpdateView,
                     DeliveryScheduleCreateView, DeliveryScheduleListView,
                     DeliveryScheduleUpdateView, SupplierCreateView,
-                    SupplierDeleteView, SupplierListView, SupplierUpdateView)
+                    SupplierDeleteView, SupplierListView, SupplierUpdateView, 
+                    PickupScheduleListView, PickupScheduleCreateView)
 
 app_name = 'suppliers'
 
@@ -22,4 +23,6 @@ urlpatterns = [
     path('delivery-schedule/', DeliveryScheduleListView.as_view(), name='delivery_schedule_list'),
     path('delivery-schedule/add/', DeliveryScheduleCreateView.as_view(), name='delivery_schedule_create'),
     path('delivery-schedule/<int:pk>/edit/', DeliveryScheduleUpdateView.as_view(), name='delivery_schedule_update'),
+    path('pickup-schedule/', PickupScheduleListView.as_view(), name='pickup_schedule_list'),
+    path('pickup-schedule/add/', PickupScheduleCreateView.as_view(), name='pickup_schedule_create'),
 ]

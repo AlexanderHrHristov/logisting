@@ -20,6 +20,7 @@
     {% if user.is_authenticated %}
         <a href="{% url 'orders:list' %}">Поръчки</a> |
         <a href="{% url 'suppliers:delivery_schedule_list' %}">График на доставките</a> |
+        <a href="{% url 'suppliers:pickup_schedule_list' %}">График за вземане</a> |
         <a href="{% url 'suppliers:supplier-list' %}">Доставчици</a> |
         <a href="{% url 'suppliers:contract-list' %}">Регистър на договори</a> |
     {% endif %}

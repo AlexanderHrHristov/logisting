@@ -36,10 +36,11 @@ CRUD operations that extend your current project. This should be done for a logg
 
 
 
-
 - Add at least 5 custom options (in total) to the admib interface (e.g. filters, list display,
 ordering, etc.).
 
+- Set logic for attached files (e.g., images, documents, etc.) to be uploaded and stored in the database
+    (e.g., using Django's FileField/ImageField).
 
 - Optionally, you can utilize multiple storage systems (e.g., files, other Web services, and databases
 like PostgreSQL/MySQL/MariaDB/Oracle, etc.)
