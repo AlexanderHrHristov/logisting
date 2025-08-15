@@ -1,4 +1,4 @@
-import datetime
+from datetime import datetime, date as dt_date
 from django.contrib import messages
 from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
@@ -115,6 +115,7 @@ class ContractDeleteView(LoginRequiredMixin, UserPassesTestMixin, View):
 
 # DeliverySchedule - Views
 
+from datetime import date as dt_date, datetime
 
 class DeliveryScheduleListView(ListView):
     model = DeliverySchedule
@@ -122,18 +123,23 @@ class DeliveryScheduleListView(ListView):
     context_object_name = "schedules"
 
     def get_queryset(self):
-        qs = DeliverySchedule.objects.select_related('supplier', 'supplier__responsible_logistic').all()
+        qs = DeliverySchedule.objects.select_related(
+            'supplier',
+            'supplier__responsible_logistic'
+        ).all()
 
-        date = self.request.GET.get('date')
+        date_param = self.request.GET.get('date')
         supplier = self.request.GET.get('supplier')
 
-        if date:
+        # Филтриране по избрана дата
+        if date_param:
             try:
-                date_obj = datetime.strptime(date, "%Y-%m-%d").date()
+                date_obj = datetime.strptime(date_param, "%Y-%m-%d").date()
                 qs = qs.filter(date=date_obj)
             except ValueError:
                 pass  # игнорирай грешни дати
 
+        # Филтриране по доставчик
         if supplier:
             try:
                 qs = qs.filter(supplier_id=int(supplier))
@@ -145,20 +151,27 @@ class DeliveryScheduleListView(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
+        today = dt_date.today()
+
         # Списък с всички доставчици за филтъра
         context['suppliers'] = Supplier.objects.all()
 
-        # Уникални дати за филтъра
-        dates = DeliverySchedule.objects.order_by('date').values_list('date', flat=True).distinct()
+        # Уникални дати за филтъра (само днешни и бъдещи)
+        dates = DeliverySchedule.objects.filter(date__gte=today) \
+            .order_by('date') \
+            .values_list('date', flat=True) \
+            .distinct()
         context['workdays'] = dates
 
-        # Групиране по дата за таблицата
+        # Групиране по дата за таблицата (само днешни и бъдещи)
         schedules_by_day = {}
         for schedule in context['schedules']:
-            schedules_by_day.setdefault(schedule.date, []).append(schedule)
-        context['schedules_by_day'] = schedules_by_day
+            if schedule.date >= today:
+                schedules_by_day.setdefault(schedule.date, []).append(schedule)
 
+        context['schedules_by_day'] = schedules_by_day
         return context
+
 
 
 class DeliveryScheduleCreateView(CreateView):

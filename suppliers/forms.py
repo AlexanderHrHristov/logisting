@@ -62,6 +62,11 @@ class DeliveryScheduleForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+
+        # Филтрираме само доставчици с метод на доставка "На място"
+        from .models import Supplier
+        self.fields['supplier'].queryset = Supplier.objects.filter(delivery_method='delivery')
+
         # Генериране на дати за следващите 2 седмици (само работни дни)
         import datetime
         today = datetime.date.today()
