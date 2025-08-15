@@ -133,24 +133,3 @@ h2 {
     width: 100%;
     margin-left: 0;  /* подравняване вляво */
 }
-
-.weather-widget {
-    position: fixed;
-    bottom: 10px;
-    right: 10px;
-    background: rgba(255, 255, 255, 0.85);
-    border-radius: 20px;
-    padding: 4px 8px;
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    font-size: 10px;
-    color: #333;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.15);
-    z-index: 1000;
-}
-
-.weather-widget img {
-    width: 20px;
-    height: 20px;
-}

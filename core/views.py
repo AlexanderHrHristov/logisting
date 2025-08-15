@@ -1,7 +1,6 @@
+import requests
 from django.conf import settings
 from django.shortcuts import render
-import requests
-
 
 from core.forms import ContactForm
 

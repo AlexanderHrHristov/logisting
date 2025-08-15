@@ -1,16 +1,86 @@
+<style>
+#weather-widget {
+    font-family: Arial, sans-serif;
+    border: 1px solid #ccc;
+    padding: 6px 10px;
+    position: fixed;
+    bottom: 10px;
+    right: 20px;
+    background: rgba(255,255,255,0.95);
+    border-radius: 10px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* Икона и анимация */
+#weather-icon {
+    width: 40px;
+    height: 40px;
+}
+
+/* плавно плаваща икона */
+@keyframes float {
+    0% { transform: translateY(0px); }
+    50% { transform: translateY(-4px); }
+    100% { transform: translateY(0px); }
+}
+
+#weather-icon.sun {
+    animation: float 3s ease-in-out infinite;
+}
+
+#weather-icon.cloud {
+    animation: float 5s ease-in-out infinite;
+}
+
+/* Текстов контейнер */
+.weather-info {
+    display: flex;
+    flex-direction: column;
+}
+.weather-info span, .weather-info small {
+    line-height: 1.2;
+}
+</style>
+
 <div id="weather-widget">
     <img id="weather-icon" src="" alt="Weather">
-    <span id="weather-temp"></span>
-    <small id="weather-desc"></small>
+    <div class="weather-info">
+        <span id="weather-city">Град</span>
+        <span id="weather-temp"></span>
+        <small id="weather-desc"></small>
+        <small>
+            <span id="weather-humidity"></span>, 
+            <span id="weather-wind"></span>
+        </small>
+    </div>
 </div>
 
 <script>
 const apiKey = "78c2e7b31ebbd2cad939a3e0f3eab816";
-fetch(`https://api.openweathermap.org/data/2.5/weather?q=Sofia&appid=${apiKey}&units=metric&lang=bg`)
+const city = "Sofia";
+
+fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric&lang=bg`)
 .then(res => res.json())
 .then(data => {
-    document.getElementById('weather-temp').textContent = data.main.temp + "°C";
+    document.getElementById('weather-city').textContent = data.name;
+    document.getElementById('weather-temp').textContent = Math.round(data.main.temp) + "°C";
     document.getElementById('weather-desc').textContent = data.weather[0].description;
-    document.getElementById('weather-icon').src = `https://openweathermap.org/img/wn/${data.weather[0].icon}.png`;
-});
+    
+    const iconEl = document.getElementById('weather-icon');
+    iconEl.src = `https://openweathermap.org/img/wn/${data.weather[0].icon}.png`;
+
+    if(data.weather[0].main.toLowerCase().includes("cloud")) {
+        iconEl.classList.add("cloud");
+    } else if(data.weather[0].main.toLowerCase().includes("clear")) {
+        iconEl.classList.add("sun");
+    }
+
+    document.getElementById('weather-humidity').textContent = "Влажност: " + data.main.humidity + "%";
+    document.getElementById('weather-wind').textContent = "Вятър: " + Math.round(data.wind.speed) + " м/с";
+})
+.catch(err => console.error("Грешка при зареждане на времето:", err));
 </script>

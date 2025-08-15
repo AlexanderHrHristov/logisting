@@ -1,10 +1,10 @@
 import django_filters
-from django_filters import FilterSet, ChoiceFilter, ModelChoiceFilter
+from django import forms
+from django_filters import ChoiceFilter, FilterSet, ModelChoiceFilter
 
-from .models import Supplier, Contract
 from users.models import AppUser  # или твоя custom user model
 
-from django import forms
+from .models import Contract, Supplier
 
 
 class SupplierFilter(FilterSet):

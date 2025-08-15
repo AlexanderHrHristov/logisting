@@ -1,7 +1,10 @@
 from django.urls import path
-from .views import SupplierListView, SupplierCreateView, SupplierUpdateView, SupplierDeleteView, ContractListView, \
-    ContractCreateView, ContractUpdateView, ContractToggleActiveView, ContractDeleteView, DeliveryScheduleListView, \
-    DeliveryScheduleCreateView, DeliveryScheduleUpdateView
+
+from .views import (ContractCreateView, ContractDeleteView, ContractListView,
+                    ContractToggleActiveView, ContractUpdateView,
+                    DeliveryScheduleCreateView, DeliveryScheduleListView,
+                    DeliveryScheduleUpdateView, SupplierCreateView,
+                    SupplierDeleteView, SupplierListView, SupplierUpdateView)
 
 app_name = 'suppliers'
 

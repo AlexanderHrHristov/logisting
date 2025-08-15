@@ -1,9 +1,10 @@
 # logisting/admin_site.py
-from django.contrib.admin import AdminSite
-from django.contrib.auth.models import User, Group
 from django.contrib import admin
+from django.contrib.admin import AdminSite
+from django.contrib.auth.models import Group, User
+
+from suppliers.models import Contract, Supplier  # твоите модели
 from users.models import AppUser
-from suppliers.models import Supplier, Contract  # твоите модели
 
 
 class CustomAdminSite(AdminSite):

@@ -1,8 +1,8 @@
-from django.urls import path, include
-from logisting.admin_site import custom_admin_site 
-from users import views
 from django.contrib.auth import views as auth_views
+from django.urls import include, path
 
+from logisting.admin_site import custom_admin_site
+from users import views
 
 urlpatterns = [
     path('admin/', custom_admin_site.urls),

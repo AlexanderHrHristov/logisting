@@ -1,6 +1,7 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 
+
 class AppUser(AbstractUser):
     """
     Custom user model that extends the default Django user model.
@@ -13,4 +14,5 @@ class AppUser(AbstractUser):
     notes = models.TextField(blank=True, null=True, verbose_name="Бележки")
 
     def __str__(self):
-        return f"{self.username} ({self.get_full_name()})"
+        return f"{self.get_full_name()}"
+        # return f"{self.username} ({self.get_full_name()})" - работи, но не е нужно за момента

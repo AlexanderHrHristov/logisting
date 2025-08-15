@@ -1,20 +1,19 @@
-from django.urls import reverse_lazy
-from django.views.generic import ListView, CreateView, UpdateView, DeleteView, View
-from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+import datetime
 from django.contrib import messages
-from django_filters.views import FilterView
-from .models import Supplier, Contract, DeliverySchedule
-from .forms import SupplierForm, ContractForm, DeliveryScheduleForm
-from logisting.mixins import (
-    LegalOnlyMixin,
-    LogisticsManagerRequiredMixin,
-    LogisticsOrManagerRequiredMixin,
-)
-from .filters import SupplierFilter, ContractFilter
-from django.shortcuts import redirect, get_object_or_404
 from django.contrib.auth import get_user_model
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.shortcuts import get_object_or_404, redirect
+from django.urls import reverse_lazy
+from django.views.generic import (CreateView, DeleteView, ListView, UpdateView,
+                                  View)
+from django_filters.views import FilterView
 
+from logisting.mixins import (LegalOnlyMixin, LogisticsManagerRequiredMixin,
+                              LogisticsOrManagerRequiredMixin)
 
+from .filters import ContractFilter, SupplierFilter
+from .forms import ContractForm, DeliveryScheduleForm, SupplierForm
+from .models import Contract, DeliverySchedule, Supplier
 
 User = get_user_model()
 

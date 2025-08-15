@@ -1,7 +1,7 @@
 from django import forms
-from .models import Supplier, Contract, DeliverySchedule
 from django.contrib.auth import get_user_model
 
+from .models import Contract, DeliverySchedule, Supplier
 
 
 class SupplierForm(forms.ModelForm):

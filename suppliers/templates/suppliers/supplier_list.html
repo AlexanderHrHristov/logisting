@@ -9,7 +9,7 @@
     {{ filter.form.name.label_tag }} {{ filter.form.name }}
     {{ filter.form.delivery_method.label_tag }} {{ filter.form.delivery_method }}
     {{ filter.form.responsible_logistic.label_tag }} {{ filter.form.responsible_logistic }}
-    <button type="submit">Филтрирай</button>
+    <button type="submit" class="btn btn-primary">Покажи</button> 
   </div>
 </form>
 
@@ -38,7 +38,7 @@
             <td>{{ supplier.get_delivery_method_display }}</td>
             <td>{{ supplier.responsible_logistic }}</td>
             <td>
-                <a href="{% url 'suppliers:supplier-update' supplier.pk %}" class="btn btn-sm btn-primary">Редакция</a>
+                <a href="{% url 'suppliers:supplier-update' supplier.pk %}" class="btn btn-sm btn-warning">Редактирай</a>
                 {% if is_logistics_manager %}
                     <a href="{% url 'suppliers:supplier-delete' supplier.pk %}" class="btn btn-sm btn-danger">Изтриване</a>
                 {% endif %}

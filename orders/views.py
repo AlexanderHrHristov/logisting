@@ -1,9 +1,12 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
-from django.views.generic import ListView, CreateView, UpdateView, DeleteView
-from .models import Order
-from .forms import OrderForm
+from django.views.generic import CreateView, DeleteView, ListView, UpdateView
+
 from logisting.mixins import LogisticsOrManagerRequiredMixin
+
+from .forms import OrderForm
+from .models import Order
+
 
 class OrderListView(LoginRequiredMixin, ListView):
     model = Order
