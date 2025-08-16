@@ -1,13 +1,24 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
 
 {% block content %}
-<h1>Потвърждение за изтриване</h1>
+<div class="container mt-5">
+    <h2 class="mb-4 text-center">⚠️ Потвърждение за изтриване</h2>
 
-<p>Сигурни ли сте, че искате да изтриете доставчик "{{ object.name }}"?</p>
+    <div class="card shadow" style="background-color: #0d3b66; max-width: 600px; margin: auto; border-radius: 10px;">
+        <div class="card-body">
+            <p class="text-white mb-4">
+                Сигурни ли сте, че искате да изтриете доставчик "<strong>{{ object.name }}</strong>"?
+            </p>
 
-<form method="post">
-    {% csrf_token %}
-    <button type="submit" class="btn btn-danger">Изтрий</button>
-    <a href="{% url 'suppliers:supplier-list' %}" class="btn btn-secondary">Отказ</a>
-</form>
+            <div class="d-flex justify-content-between">
+                <form method="post" style="display:inline;">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger">🗑️ Изтрий</button>
+                </form>
+                <a href="{% url 'suppliers:supplier-list' %}" class="btn btn-secondary">Отказ</a>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}
+

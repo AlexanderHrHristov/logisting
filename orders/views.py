@@ -17,7 +17,7 @@ class OrderCreateView(LoginRequiredMixin, LogisticsOrManagerRequiredMixin, Creat
     model = Order
     form_class = OrderForm
     template_name = 'orders/order_form.html'
-    permission_message = "Само администратори и логистици могат да създават поръчки." # И superusers потребители
+    permission_message = "Само логистици могат да създават поръчки." # И superusers потребители
     success_url = reverse_lazy('orders:list')
 
     def form_valid(self, form):

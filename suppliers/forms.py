@@ -50,7 +50,7 @@ class DeliveryScheduleForm(forms.ModelForm):
 
     class Meta:
         model = DeliverySchedule
-        fields = ['supplier', 'date', 'hour', 'note', 'logistics_responsible']
+        fields = ['supplier', 'date', 'hour', 'note']
         widgets = {
             'hour': forms.TimeInput(attrs={'type': 'time', 'min': '08:00', 'max': '17:00'}),
             'note': forms.Textarea(attrs={'rows': 2}),

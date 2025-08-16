@@ -42,6 +42,8 @@ MY_APPS = [
     'django_filters',
     "internationalflavor",
     'orders.apps.OrdersConfig',
+    'widget_tweaks',
+    'django_extensions',
 ]   
 
 INSTALLED_APPS = [

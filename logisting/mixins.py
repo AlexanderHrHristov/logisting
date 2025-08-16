@@ -1,5 +1,6 @@
 from django.contrib import messages
 from django.contrib.auth.mixins import UserPassesTestMixin
+from django.core.exceptions import PermissionDenied
 from django.shortcuts import redirect
 
 
@@ -13,9 +14,9 @@ class GroupRequiredMixin(UserPassesTestMixin):
             return True
         return user.groups.filter(name__in=self.allowed_groups).exists()
 
+
     def handle_no_permission(self):
-        messages.error(self.request, getattr(self, 'permission_message', self.permission_message))
-        return redirect('orders:list')
+        raise PermissionDenied  # вместо редирект
 
 
 class LegalOnlyMixin(GroupRequiredMixin):

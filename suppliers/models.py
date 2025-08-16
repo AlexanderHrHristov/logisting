@@ -138,23 +138,31 @@ class DeliverySchedule(models.Model):
     supplier = models.ForeignKey(
         'suppliers.Supplier', 
         on_delete=models.CASCADE, 
-        related_name='deliveries'
+        related_name='deliveries',
+        verbose_name="Доставчик"
     )
     
-    hour = models.TimeField()
+    hour = models.TimeField(
+        verbose_name="Час на доставка"
+    )
 
-    date = models.DateField()
+
+    date = models.DateField(
+        verbose_name="Дата"
+    )
 
     note = models.TextField(
-        blank=True, 
-        null=True
+        blank=True,
+        null=True,
+        verbose_name="Забележка"
     )
     
     logistics_responsible = models.ForeignKey(
         User, 
         on_delete=models.SET_NULL, 
         null=True, 
-        blank=True
+        blank=True,
+        verbose_name="Отговорен логистик"
     )
 
     class Meta:

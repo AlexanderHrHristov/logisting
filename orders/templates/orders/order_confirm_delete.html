@@ -1,12 +1,22 @@
 {% extends "base.html" %}
 {% block content %}
-<div class="container mt-4">
-    <h2>Изтриване на поръчка</h2>
-    <p class="text-white">Сигурни ли сте, че искате да изтриете поръчката към {{ object.supplier.name }} направена на {{ object.order_date }}?</p>
-    <form method="post">
-        {% csrf_token %}
-        <button type="submit" class="btn btn-danger">Изтрий</button>
-        <a href="{% url 'orders:list' %}" class="btn btn-secondary">Назад</a>
-    </form>
+<div class="container mt-5">
+    <h2 class="mb-4 text-center">⚠️ Изтриване на поръчка</h2>
+
+    <div class="card shadow" style="background-color: #0d3b66; max-width: 600px; margin: auto; border-radius: 10px;">
+        <div class="card-body">
+            <p class="text-white mb-4">
+                Сигурни ли сте, че искате да изтриете поръчката към <strong>{{ object.supplier.name }}</strong> направена на <strong>{{ object.order_date }}</strong>?
+            </p>
+
+            <div class="d-flex justify-content-between">
+                <form method="post" style="display:inline;">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger">🗑️ Изтрий</button>
+                </form>
+                <a href="{% url 'orders:list' %}" class="btn btn-secondary">Назад</a>
+            </div>
+        </div>
+    </div>
 </div>
 {% endblock %}

@@ -23,7 +23,7 @@ User = get_user_model()
 
 # Suppliers Register Views
 
-class SupplierListView(LoginRequiredMixin, LegalOnlyMixin, LogisticsOrManagerRequiredMixin, FilterView):
+class SupplierListView(LoginRequiredMixin, LogisticsOrManagerRequiredMixin, FilterView):
     model = Supplier
     template_name = 'suppliers/supplier_list.html'
     context_object_name = 'suppliers'
@@ -40,20 +40,20 @@ class SupplierListView(LoginRequiredMixin, LegalOnlyMixin, LogisticsOrManagerReq
 class SupplierCreateView(LoginRequiredMixin, LogisticsOrManagerRequiredMixin, CreateView):
     model = Supplier
     form_class = SupplierForm
-    template_name = 'suppliers/templates/supplier_form.html'
+    template_name = 'suppliers/supplier_form.html'
     success_url = reverse_lazy('suppliers:supplier-list')
 
 
 class SupplierUpdateView(LoginRequiredMixin, LogisticsOrManagerRequiredMixin, UpdateView):
     model = Supplier
     form_class = SupplierForm
-    template_name = 'suppliers/templates/supplier_form.html'
+    template_name = 'suppliers/supplier_form.html'
     success_url = reverse_lazy('suppliers:supplier-list')
 
 
 class SupplierDeleteView(LoginRequiredMixin, LogisticsManagerRequiredMixin, DeleteView):
     model = Supplier
-    template_name = 'suppliers/templates/supplier_confirm_delete.html'
+    template_name = 'suppliers/supplier_confirm_delete.html'
     success_url = reverse_lazy('suppliers:supplier-list')
 
     def delete(self, request, *args, **kwargs):
@@ -65,7 +65,7 @@ class SupplierDeleteView(LoginRequiredMixin, LogisticsManagerRequiredMixin, Dele
 
 class ContractListView(LoginRequiredMixin, UserPassesTestMixin, ListView):
     model = Contract
-    template_name = 'suppliers/templates/contract_list.html'
+    template_name = 'suppliers/contract_list.html'
     context_object_name = 'contracts'
     paginate_by = 20
 
@@ -84,14 +84,14 @@ class ContractListView(LoginRequiredMixin, UserPassesTestMixin, ListView):
 class ContractCreateView(LoginRequiredMixin, LegalOnlyMixin, CreateView):
     model = Contract
     form_class = ContractForm
-    template_name = 'suppliers/templates/contract_form.html'
+    template_name = 'suppliers/contract_form.html'
     success_url = reverse_lazy('suppliers:contract-list')
 
 
 class ContractUpdateView(LoginRequiredMixin, LegalOnlyMixin, UpdateView):
     model = Contract
     form_class = ContractForm
-    template_name = 'suppliers/templates/contract_form.html'
+    template_name = 'suppliers/contract_form.html'
     success_url = reverse_lazy('suppliers:contract-list')
 
 
