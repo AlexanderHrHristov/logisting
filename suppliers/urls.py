@@ -27,6 +27,7 @@ urlpatterns = [
     path('contracts/<int:pk>/update/', ContractUpdateView.as_view(), name='contract-update'),
     path('contracts/<int:pk>/toggle/', ContractToggleActiveView.as_view(), name='contract-toggle'),
     path('contracts/<int:pk>/delete/', ContractDeleteView.as_view(), name='contract-delete'),
+    path('contracts/<str:filename>/', views.serve_contract, name='serve_contract'),
 
     # --- График на доставки ---
     path('delivery-schedule/', DeliveryScheduleListView.as_view(), name='delivery_schedule_list'),

@@ -1,3 +1,5 @@
+import os
+from django.http import FileResponse, Http404
 from collections import OrderedDict
 from datetime import datetime, date as dt_date, timezone, timedelta
 from django.contrib import messages
@@ -123,6 +125,17 @@ class ContractDeleteView(LoginRequiredMixin, UserPassesTestMixin, View):
         contract.delete()
         messages.success(request, "Договорът беше изтрит.")
         return redirect('suppliers:contract-list')
+
+
+CONTRACTS_DIR = r"C:\Downloads\logisting\contracts"  # пълният път до папката с PDF
+
+def serve_contract(request, filename):
+    file_path = os.path.join(CONTRACTS_DIR, filename)
+    if os.path.exists(file_path):
+        return FileResponse(open(file_path, 'rb'), content_type='application/pdf')
+    else:
+        raise Http404("Файлът не съществува")
+
 
 
 # DeliverySchedule - Views
@@ -259,3 +272,4 @@ class PickupScheduleDeleteView(DeleteView):
     model = PickupSchedule
     template_name = "suppliers/pickup_confirm_delete.html"
     success_url = reverse_lazy("suppliers:pickup_schedule_list")
+
