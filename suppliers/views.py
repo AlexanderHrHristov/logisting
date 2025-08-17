@@ -32,13 +32,12 @@ class SupplierListView(LoginRequiredMixin, FilterView):
     paginate_by = 20
     filterset_class = SupplierFilter
 
-    allowed_groups = ['Logistics', 'Logistics Manager', 'Legal']  # <- добавяме Legal
+    allowed_groups = ['Logistics', 'Logistics Manager', 'Legal']  # Legal е добавена
 
     def dispatch(self, request, *args, **kwargs):
         user_groups = request.user.groups.values_list('name', flat=True)
         if not set(self.allowed_groups).intersection(user_groups):
-            raise PermissionDenied
-
+            raise PermissionDenied('Само Логистици, Мениджър Логистика и Legal могат да виждат доставчици')
         return super().dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
