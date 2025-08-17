@@ -33,7 +33,7 @@ and one-to-one relation are considered one model).
 entered (both client-side and server-side)
 + You must implement a new "main" functionality! It is considered two additional views with
 CRUD operations that extend your current project. This should be done for a logged-in user.
-+ Add at least 5 custom options (in total) to the admib interface (e.g. filters, list display,
++ Add at least 5 custom options (in total) to the admin interface (e.g. filters, list display,
 ordering, etc.).
 
 

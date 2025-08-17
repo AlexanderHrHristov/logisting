@@ -3,6 +3,7 @@ from datetime import datetime, date as dt_date, timezone, timedelta
 from django.contrib import messages
 from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.core.exceptions import PermissionDenied
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse_lazy
 from django.utils import timezone
@@ -24,12 +25,21 @@ User = get_user_model()
 
 # Suppliers Register Views
 
-class SupplierListView(LoginRequiredMixin, LogisticsOrManagerRequiredMixin, FilterView):
+class SupplierListView(LoginRequiredMixin, FilterView):
     model = Supplier
     template_name = 'suppliers/supplier_list.html'
     context_object_name = 'suppliers'
     paginate_by = 20
     filterset_class = SupplierFilter
+
+    allowed_groups = ['Logistics', 'Logistics Manager', 'Legal']  # <- добавяме Legal
+
+    def dispatch(self, request, *args, **kwargs):
+        user_groups = request.user.groups.values_list('name', flat=True)
+        if not set(self.allowed_groups).intersection(user_groups):
+            raise PermissionDenied
+
+        return super().dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

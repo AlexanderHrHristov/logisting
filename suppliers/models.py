@@ -53,7 +53,7 @@ class Supplier(models.Model):
         max_length=20,
         choices=DELIVERY_METHOD_CHOICES,
         default='delivery',
-        verbose_name="Метод на доставка"
+        verbose_name="Тип доставка"
     )
 
     responsible_logistic = models.ForeignKey(

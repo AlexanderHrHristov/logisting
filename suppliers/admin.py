@@ -47,8 +47,8 @@ class PickupScheduleAdmin(admin.ModelAdmin):
 
     def mark_as_thermolabile(self, request, queryset):
         queryset.update(thermolabile=True)
-    mark_as_thermolabile.short_description = "Маркирай избраните като термолабилни"
+    mark_as_thermolabile.short_description = "Доставчика доставя термолабилни"
 
     def mark_as_narcotic(self, request, queryset):
         queryset.update(narcotic=True)
-    mark_as_narcotic.short_description = "Маркирай избраните като наркотични"
+    mark_as_narcotic.short_description = "Доставчика доставя наркотични"

@@ -12,7 +12,7 @@ class SupplierFilter(FilterSet):
 
     delivery_method = ChoiceFilter(
         choices=Supplier.DELIVERY_METHOD_CHOICES,
-        label='Метод на доставка'
+        label='Тип доставка'
     )
 
     responsible_logistic = ModelChoiceFilter(
