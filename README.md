@@ -25,7 +25,7 @@ Database	SQLite (default, switchable to PostgreSQL/MySQL)
 Auth & Permissions	Django authentication system, groups, custom permissions
 🚀 Quick Start
 # Clone repository
-git clone https://github.com/username/logisting.git
+git clone [https://github.com/username/logisting.git](https://github.com/AlexanderHrHristov/logisting.git)
 cd logisting
 
 # Install dependencies
