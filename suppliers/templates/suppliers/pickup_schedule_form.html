@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% load widget_tweaks %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="mb-4 text-center">
+        {% if form.instance.pk %}✏️ Редакция на вземане{% else %}➕ Ново вземане{% endif %}
+    </h2>
+
+    <div class="card shadow" style="background-color: #0d3b66; max-width: 600px; margin: auto; border-radius: 10px;">
+        <div class="card-body">
+            <form method="post" class="needs-validation" novalidate>
+                {% csrf_token %}
+
+                <!-- Обход на всички полета -->
+                {% for field in form %}
+                    <div class="mb-3">
+                        <label for="{{ field.id_for_label }}" class="form-label text-white">{{ field.label }}</label>
+
+                        {% if field.field.widget.input_type == "checkbox" %}
+                            <div class="form-check">
+                                {{ field|add_class:"form-check-input" }}
+                                <label class="form-check-label text-white" for="{{ field.id_for_label }}">{{ field.label }}</label>
+                            </div>
+                        {% else %}
+                            {{ field|add_class:"form-control bg-light text-dark" }}
+                        {% endif %}
+
+                        {% if field.help_text %}
+                            <div class="form-text text-white">{{ field.help_text }}</div>
+                        {% endif %}
+                        {% for error in field.errors %}
+                            <div class="text-danger small">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+                {% endfor %}
+
+                <div class="d-flex justify-content-between">
+                    <button type="submit" class="btn btn-success">💾 Запази</button>
+                    <a href="{% url 'suppliers:pickup_schedule_list' %}" class="btn btn-secondary">Отказ</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,44 +1,88 @@
 {% extends "base.html" %}
 {% block content %}
 
-<h2 class="mb-4" style="color: white; font-weight: bold;">🚚 График за вземане на стоки</h2>
+<h2 class="mb-4" style="color: white; font-weight: bold;">🚚 График за вземане на стоки от външни спедиции</h2>
 
 
-    <div class="table-responsive">
-        <table class="table table-striped table-hover align-middle">
-            <thead class="table-dark">
-        <tr>
-            <th>Дата</th>
-            <th>Доставчик</th>
-            <th>Обем (кг)</th>
-            <th>Термолабилни</th>
-            <th>Наркотични</th>
-            <th>Забележка</th>
-            <th>Шофьор</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for schedule in schedules %}
-            <tr>
-                <td>{{ schedule.date }}</td>
-                <td>{{ schedule.supplier.name }}</td>
-                <td>{{ schedule.volume }}</td>
-                <td>{% if schedule.thermolabile %}ДА{% else %}НЕ{% endif %}</td>
-                <td>{% if schedule.narcotic %}ДА{% else %}НЕ{% endif %}</td>
-                <td>{{ schedule.note }}</td>
-                <td>
-                    {% if schedule.logistics_responsible %}
-                        {{ schedule.logistics_responsible.get_full_name }}
+    <div class="container mt-4">
+
+    <a href="{% url 'suppliers:pickup_create' %}" class="btn btn-primary mt-3">➕ Добави ново вземане</a>
+
+        <!-- Filters -->
+        <form method="get" class="row g-2 mb-3">
+            <div class="col-auto">
+                <label for="date" class="form-label">Дата</label>
+                <select id="date" name="date" class="form-select">
+                    <option value="" {% if not request.GET.date %}selected{% endif %}>Всички</option>
+                    {% for day in workdays %}
+                        <option value="{{ day|date:'Y-m-d' }}" {% if request.GET.date == day|date:'Y-m-d' %}selected{% endif %}>
+                            {{ day|date:"d F Y" }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="col-auto">
+                <label for="supplier" class="form-label">Доставчик</label>
+                <select id="supplier" name="supplier" class="form-select">
+                    <option value="" {% if not request.GET.supplier %}selected{% endif %}>Всички</option>
+                    {% for supplier in suppliers %}
+                        <option value="{{ supplier.id }}" {% if request.GET.supplier == supplier.id|stringformat:"s" %}selected{% endif %}>
+                            {{ supplier.name }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="col-auto align-self-end">
+                <button type="submit" class="btn btn-primary">Покажи</button>
+            </div>
+        </form>
+
+        <div class="table-responsive">
+            <table class="table table-striped table-hover align-middle">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Дата</th>
+                        <th>Доставчик</th>
+                        <th>Обем (палети)</th>
+                        <th>Термолабилни</th>
+                        <th>Наркотични</th>
+                        <th>Бележка</th>
+                        <th class="text-center">Действия</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if schedules_by_day %}
+                        {% for day, day_schedules in schedules_by_day.items %}
+                            {% for schedule in day_schedules %}
+                                <tr>
+                                    {% if forloop.first %}
+                                        <td rowspan="{{ day_schedules|length }}">{{ day|date:"d.m.Y" }}</td>
+                                    {% endif %}
+                                    <td>{{ schedule.supplier.name }}</td>
+                                    <td>{{ schedule.volume }}</td>
+                                    <td>{{ schedule.thermolabile|yesno:"Да,Не" }}</td>
+                                    <td>{{ schedule.narcotic|yesno:"Да,Не" }}</td>
+                                    <td>{{ schedule.note|default:"-" }}</td>
+                                    <td class="text-center">
+                                        <a href="{% url 'suppliers:pickup_update' schedule.pk %}" class="btn btn-sm btn-warning">Редактирай</a>
+                                        <a href="{% url 'suppliers:pickup_delete' schedule.pk %}" class="btn btn-sm btn-danger">Изтрий</a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        {% endfor %}
                     {% else %}
-                        -
+                        <tr>
+                            <td colspan="7" class="text-center text-muted">Няма вземания</td>
+                        </tr>
                     {% endif %}
-                </td>
-            </tr>
-        {% empty %}
-            <tr>
-                <td colspan="7" class="text-center">Няма записи.</td>
-            </tr>
-        {% endfor %}
-    </tbody>
-</table>
-{% endblock %}
+                </tbody>
+            </table>
+        </div>
+
+
+
+
+    </div>
+    {% endblock %}

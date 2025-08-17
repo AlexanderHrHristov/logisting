@@ -5,6 +5,9 @@
 <div class="container mt-4">
 <h2 class="mb-4" style="color: white; font-weight: bold;">📄 Регистър на договори</h2>
 
+    {% if user.groups.all.0.name == "Legal" %}
+        <a href="{% url 'suppliers:contract-create' %}" class="btn btn-primary mt-3">➕ Нов договор</a>
+    {% endif %}
 
 <form method="get" class="filters-row">
   <div>
@@ -92,8 +95,5 @@
         </table>
     </div>
 
-    {% if user.groups.all.0.name == "Legal" %}
-        <a href="{% url 'suppliers:contract-create' %}" class="btn btn-primary mt-3">➕ Нов договор</a>
-    {% endif %}
 </div>
 {% endblock %}

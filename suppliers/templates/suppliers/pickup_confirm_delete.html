@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container mt-5">
+    <h2 class="text-danger">Изтриване на вземане</h2>
+    <p class="text-white">Сигурни ли сте, че искате да изтриете записа на {{ object.supplier.name }} от {{ object.date }}?</p>
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">Изтрий</button>
+        <a href="{% url 'supplier:pickup-list' %}" class="btn btn-secondary">Отказ</a>
+    </form>
+</div>
+{% endblock %}

@@ -1,16 +1,14 @@
-# logisting/admin_site.py
-from django.contrib import admin
 from django.contrib.admin import AdminSite
-from django.contrib.auth.models import Group, User
-
-from suppliers.models import Contract, Supplier  # твоите модели
+from suppliers.models import Supplier, Contract, PickupSchedule
+from suppliers.admin import SupplierAdmin, ContractAdmin, PickupScheduleAdmin
 from users.models import AppUser
+from users.admin import AppUserAdmin
 
 
 class CustomAdminSite(AdminSite):
     site_header = "Logisting Admin"
     site_title = "Logisting Admin Portal"
-    index_title = "Добре дошли в Logisting Admin"
+    index_title = "Добре дошли в LogiSting Admin панел"
 
     def has_permission(self, request):
         return request.user.is_active and request.user.is_superuser
@@ -21,8 +19,11 @@ class CustomAdminSite(AdminSite):
         filtered_apps = [app for app in app_dict.values() if app['app_label'] in allowed_apps]
         return sorted(filtered_apps, key=lambda x: x['name'].lower())
 
+
 custom_admin_site = CustomAdminSite(name='custom_admin')
 
-custom_admin_site.register(AppUser, admin.ModelAdmin)
-custom_admin_site.register(Supplier, admin.ModelAdmin)
-custom_admin_site.register(Contract, admin.ModelAdmin)
+# Регистрираме моделите с нашите персонализирани Admin класове
+custom_admin_site.register(AppUser, AppUserAdmin)
+custom_admin_site.register(Supplier, SupplierAdmin)
+custom_admin_site.register(Contract, ContractAdmin)
+custom_admin_site.register(PickupSchedule, PickupScheduleAdmin)

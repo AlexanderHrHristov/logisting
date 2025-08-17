@@ -1,4 +1,5 @@
-from datetime import datetime, date as dt_date, timezone
+from collections import OrderedDict
+from datetime import datetime, date as dt_date, timezone, timedelta
 from django.contrib import messages
 from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
@@ -190,48 +191,62 @@ class DeliveryScheduleUpdateView(UpdateView):
 # PickSchedule - Views
 
 class PickupScheduleListView(ListView):
-    model = DeliverySchedule
+    model = PickupSchedule
     template_name = "suppliers/pickup_schedule.html"
     context_object_name = "schedules"
 
     def get_queryset(self):
-        qs = DeliverySchedule.objects.select_related('supplier', 'logistics_responsible').filter(
-            supplier__delivery_method='pickup'
-        )
+        queryset = PickupSchedule.objects.select_related('supplier').order_by('date')
+        date_filter = self.request.GET.get('date')
+        supplier_filter = self.request.GET.get('supplier')
 
-        date = self.request.GET.get('date')
-        supplier = self.request.GET.get('supplier')
+        if date_filter:
+            queryset = queryset.filter(date=date_filter)
+        if supplier_filter:
+            queryset = queryset.filter(supplier_id=supplier_filter)
 
-        if date:
-            try:
-                from datetime import datetime
-                date_obj = datetime.strptime(date, "%Y-%m-%d").date()
-                qs = qs.filter(date=date_obj)
-            except ValueError:
-                pass
-
-        if supplier:
-            try:
-                qs = qs.filter(supplier_id=int(supplier))
-            except ValueError:
-                pass
-
-        # Скриваме минали дати по подразбиране
-        today = timezone.localdate()
-        qs = qs.filter(date__gte=today)
-
-        return qs.order_by('date', 'hour')
+        return queryset
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        # Всички доставчици с pickup метод
-        context['suppliers'] = Supplier.objects.filter(delivery_method='pickup')
-        
+
+        # Списък на всички работни дни (например следващите 14 дни)
+        today = timezone.localdate()
+        workdays = [today + timedelta(days=i) for i in range(14)]
+        context['workdays'] = workdays
+
+        # Списък на доставчици
+        context['suppliers'] = Supplier.objects.all()
+
+        # Групиране по ден
+        schedules = self.get_queryset()
+        schedules_by_day = OrderedDict()
+        for schedule in schedules:
+            schedules_by_day.setdefault(schedule.date, []).append(schedule)
+        context['schedules_by_day'] = schedules_by_day
+
         return context
-    
-    
+
+
 class PickupScheduleCreateView(CreateView):
     model = PickupSchedule
     form_class = PickupScheduleForm
     template_name = "suppliers/pickup_schedule_form.html"
-    success_url = "/suppliers/pickup-schedule/"
+
+    def get_success_url(self):
+        return reverse_lazy("suppliers:pickup_schedule_list")
+
+
+class PickupScheduleUpdateView(UpdateView):
+    model = PickupSchedule
+    form_class = PickupScheduleForm
+    template_name = "suppliers/pickup_schedule.html"
+
+    def get_success_url(self):
+        return reverse_lazy("suppliers:pickup_schedule_list")
+
+
+class PickupScheduleDeleteView(DeleteView):
+    model = PickupSchedule
+    template_name = "suppliers/pickup_confirm_delete.html"
+    success_url = reverse_lazy("suppliers:pickup_schedule_list")

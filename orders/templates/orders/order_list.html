@@ -1,12 +1,14 @@
 {% extends "base.html" %}
-
 {% block content %}
+
+
+<h2 class="mb-4" style="color: white; font-weight: bold;">📦 Поръчки</h2>
 <div class="container mt-4">
-    <h2>📦 Поръчки</h2>
     <a href="{% url 'orders:create' %}" class="btn btn-primary mb-3">➕ Нова поръчка</a>
 
-    <table class="table table-striped">
-        <thead>
+    <table class="table table-striped table-hover align-middle">
+
+            <thead class="table-dark">
             <tr>
                 <th style="width: 24%;">Доставчик</th>
                 <th style="width: 8%;">Дата</th>

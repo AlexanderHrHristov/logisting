@@ -76,18 +76,33 @@ class DeliveryScheduleForm(forms.ModelForm):
         self.fields['date'].widget.choices = dates
 
 
+# class PickupScheduleForm(forms.ModelForm):
+#     class Meta:
+#         model = PickupSchedule
+#         fields = ['date', 'supplier', 'volume', 'thermolabile', 'narcotic', 'note', 'driver']
+#         widgets = {
+#             'date': forms.SelectDateWidget(),
+#             'note': forms.Textarea(attrs={'rows': 2}),
+#         }
+#
+#     def __init__(self, *args, **kwargs):
+#         super().__init__(*args, **kwargs)
+#         # Ограничаваме доставчиците до pickup
+#         self.fields['supplier'].queryset = Supplier.objects.filter(delivery_method='pickup')
+#         # Ограничаваме шофьорите до групата Drivers
+#         self.fields['driver'].queryset = User.objects.filter(groups__name='Drivers')
+
+
 class PickupScheduleForm(forms.ModelForm):
     class Meta:
         model = PickupSchedule
-        fields = ['date', 'supplier', 'volume', 'thermolabile', 'narcotic', 'note', 'driver']
+        fields = '__all__'
         widgets = {
-            'date': forms.SelectDateWidget(),
-            'note': forms.Textarea(attrs={'rows': 2}),
+            'date': forms.DateInput(attrs={'type': 'date'}),
+            'supplier': forms.Select(attrs={'class': 'form-select'}),
+            'volume': forms.NumberInput(attrs={'class': 'form-control'}),
+            'thermolabile': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
+            'narcotic': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
+            'note': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
+            'driver': forms.Select(attrs={'class': 'form-select'}),
         }
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        # Ограничаваме доставчиците до pickup
-        self.fields['supplier'].queryset = Supplier.objects.filter(delivery_method='pickup')
-        # Ограничаваме шофьорите до групата Drivers
-        self.fields['driver'].queryset = User.objects.filter(groups__name='Drivers')
