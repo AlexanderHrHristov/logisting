@@ -9,8 +9,8 @@ User = get_user_model()
 class UserRegistrationForm(UserCreationForm):
     username = forms.CharField(
         label="Потребителско име",
-        max_length=20,
-        help_text="До 20 символа. Разрешени са букви, цифри и точка (.)",
+        max_length=30,
+        help_text="До 30 символа. Разрешени са букви, цифри и точка (.)",
         widget=forms.TextInput(attrs={'class': 'form-control'}),
     )
 
