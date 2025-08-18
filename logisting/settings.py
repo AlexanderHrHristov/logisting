@@ -48,7 +48,6 @@ MY_APPS = [
 ]   
 
 INSTALLED_APPS = [
-    'jazzmin',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -57,25 +56,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 ] + MY_APPS
 
-# JAZZMIN_SETTINGS = {
-#     "site_title": "Logisting Admin Portal",
-#     "site_header": "Logisting Admin",
-#     "site_brand": "Logisting",
-#     "welcome_sign": "Добре дошли в Logisting Admin панел",
-#     "name": "Договори изтичащи скоро",
-# }
-
-JAZZMIN_SETTINGS = {
-    "site_title": "Logisting Admin Portal",  # заглавие на таба
-    "site_header": "Logisting Admin",        # горен хедър
-    "site_brand": "Logisting",               # лого/текст в горния ляв ъгъл
-    "welcome_sign": "Добре дошли в Logisting Admin панел", # текст на началната страница
-    "copyright": "Logisting © 2025",
-    # "topmenu_links": [                       # бързи линкове в горното меню
-    #     {"name": "Начало",  "url": "/", "permissions": ["auth.view_user"]},
-    #     {"name": "Документация", "url": "https://example.com/docs", "new_window": True},
-    # ], - това на следващия етап.
-}
 
 
 AUTH_USER_MODEL = 'users.AppUser'

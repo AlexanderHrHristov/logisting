@@ -38,17 +38,3 @@ class ContractAdmin(admin.ModelAdmin):
     autocomplete_fields = ["supplier"]  # търсене вместо drop-down
     date_hierarchy = "signed_date"
 
-
-class PickupScheduleAdmin(admin.ModelAdmin):
-    list_display = ("date", "supplier", "volume", "thermolabile", "narcotic", "driver")
-    list_filter = ("date", "thermolabile", "narcotic", "supplier")
-    ordering = ("-date", "supplier")
-    actions = ["mark_as_thermolabile", "mark_as_narcotic"]
-
-    def mark_as_thermolabile(self, request, queryset):
-        queryset.update(thermolabile=True)
-    mark_as_thermolabile.short_description = "Доставчика доставя термолабилни"
-
-    def mark_as_narcotic(self, request, queryset):
-        queryset.update(narcotic=True)
-    mark_as_narcotic.short_description = "Доставчика доставя наркотични"

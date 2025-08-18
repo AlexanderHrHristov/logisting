@@ -6,7 +6,6 @@ from .views import (
     SupplierListView, SupplierCreateView, SupplierUpdateView, SupplierDeleteView,
     ContractListView, ContractCreateView, ContractUpdateView, ContractDeleteView, ContractToggleActiveView,
     DeliveryScheduleListView, DeliveryScheduleCreateView, DeliveryScheduleUpdateView,
-    PickupScheduleListView, PickupScheduleCreateView, PickupScheduleUpdateView, PickupScheduleDeleteView
 )
 
 

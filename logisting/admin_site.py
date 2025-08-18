@@ -1,6 +1,6 @@
 from django.contrib.admin import AdminSite
-from suppliers.models import Supplier, Contract, PickupSchedule
-from suppliers.admin import SupplierAdmin, ContractAdmin, PickupScheduleAdmin
+from suppliers.models import Supplier, Contract
+from suppliers.admin import SupplierAdmin, ContractAdmin
 from users.models import AppUser
 from users.admin import AppUserAdmin
 
@@ -26,4 +26,3 @@ custom_admin_site = CustomAdminSite(name='custom_admin')
 custom_admin_site.register(AppUser, AppUserAdmin)
 custom_admin_site.register(Supplier, SupplierAdmin)
 custom_admin_site.register(Contract, ContractAdmin)
-custom_admin_site.register(PickupSchedule, PickupScheduleAdmin)
