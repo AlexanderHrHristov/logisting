@@ -33,27 +33,40 @@ class UserRegistrationForm(UserCreationForm):
         help_text="Въведете същата парола отново за потвърждение.",
     )
 
-    email = forms.EmailField(label="Имейл", widget=forms.EmailInput(attrs={'class': 'form-control'}))
-    first_name = forms.CharField(label="Име", widget=forms.TextInput(attrs={'class': 'form-control'}))
-    last_name = forms.CharField(label="Фамилия", widget=forms.TextInput(attrs={'class': 'form-control'}))
+    email = forms.EmailField(
+        label="Имейл", 
+        widget=forms.EmailInput(attrs={'class': 'form-control'})
+    )
+
+    first_name = forms.CharField(
+        label="Име", 
+        widget=forms.TextInput(attrs={'class': 'form-control'})
+    )
+
+    last_name = forms.CharField(
+        label="Фамилия", 
+        widget=forms.TextInput(attrs={'class': 'form-control'})
+    )
 
     phone = forms.CharField(
         label="Телефон",
         max_length=20,
         required=False,  # прави полето опционално
-        widget=forms.TextInput(attrs={'class': 'form-control'})
+        widget=forms.TextInput(attrs={'class': 'form-control'}),
+        help_text="* Незадължително поле, може да бъде оставено празно."
     )
 
     position = forms.CharField(
         label="Длъжност",
         max_length=50,
         required=False,  # прави полето опционално
-        widget=forms.TextInput(attrs={'class': 'form-control'})
+        widget=forms.TextInput(attrs={'class': 'form-control'}),
+        help_text="* Незадължително поле, може да бъде оставено празно."
     )
 
     class Meta:
         model = User
-        fields = ['username', 'email', 'first_name', 'last_name', 'password1', 'password2']
+        fields = ['username', 'email', 'first_name', 'last_name', 'password1', 'password2', 'phone', 'position']
 
     def clean_username(self):
         username = self.cleaned_data.get('username')

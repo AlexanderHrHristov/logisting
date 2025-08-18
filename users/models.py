@@ -17,22 +17,26 @@ class AppUser(AbstractUser):
             "unique": "A user with that username already exists.",
         },
     )
+
     phone = models.CharField(
         max_length=20, 
         blank=True, 
         null=True, 
         verbose_name="Телефон"
         )
+    
     position = models.CharField(
         max_length=50, 
         blank=True, 
         null=True, 
         verbose_name="Длъжност"
         )
+    
     created_by_admin = models.BooleanField(
         default=False, 
         verbose_name="Създаден от админ"
         )
+    
     notes = models.TextField(
         blank=True, 
         null=True, 

@@ -3,6 +3,8 @@ from suppliers.models import Supplier, Contract
 from suppliers.admin import SupplierAdmin, ContractAdmin
 from users.models import AppUser
 from users.admin import AppUserAdmin
+from django.contrib.auth.models import Group
+from django.contrib.auth.admin import GroupAdmin
 
 
 class CustomAdminSite(AdminSite):
@@ -24,5 +26,6 @@ custom_admin_site = CustomAdminSite(name='custom_admin')
 
 # Регистрираме моделите с нашите персонализирани Admin класове
 custom_admin_site.register(AppUser, AppUserAdmin)
+custom_admin_site.register(Group, GroupAdmin)
 custom_admin_site.register(Supplier, SupplierAdmin)
 custom_admin_site.register(Contract, ContractAdmin)
