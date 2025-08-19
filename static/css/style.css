@@ -133,3 +133,11 @@ h2 {
     width: 100%;
     margin-left: 0;  /* подравняване вляво */
 }
+
+<style>
+.table td, .table th {
+    word-wrap: break-word;   /* за дълги думи */
+    word-break: break-word;  /* при нужда на нов ред */
+    white-space: normal;     /* позволява на текста да се пренася */
+}
+</style>

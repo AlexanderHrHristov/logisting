@@ -100,7 +100,14 @@ class Contract(models.Model):
         max_length=20,
         choices=CONTRACT_TYPE_CHOICES,
         default='supply',
-        verbose_name="Тип"
+        verbose_name="Предмет на договора"
+    )
+
+    document_type = models.CharField(
+        max_length=50,
+        blank=True,
+        null=True,
+        verbose_name="Типове документи"
     )
 
     signed_date = models.DateField(
