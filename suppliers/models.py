@@ -22,7 +22,8 @@ class Supplier(models.Model):
     )
 
     vat_number = models.CharField(
-        max_length=20,
+        max_length=15,
+        unique=True,
         blank=True,
         null=True,
         verbose_name="ДДС номер"
@@ -30,7 +31,6 @@ class Supplier(models.Model):
 
     email = models.EmailField(
         max_length=50,
-        unique=True,
         blank=True,
         null=True
     )
