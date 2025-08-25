@@ -66,7 +66,7 @@
                                     <td>{{ schedule.narcotic|yesno:"Да,Не" }}</td>
                                     <td>{{ schedule.note|default:"-" }}</td>
                                     <td class="text-center">
-                                        <a href="{% url 'suppliers:pickup_update' schedule.pk %}" class="btn btn-sm btn-warning">Редактирай</a>
+                                        <a href="{% url 'suppliers:pickup_schedule_edit' schedule.pk %}" class="btn btn-sm btn-warning">Редактирай</a>
                                         <a href="{% url 'suppliers:pickup_delete' schedule.pk %}" class="btn btn-sm btn-danger">Изтрий</a>
                                     </td>
                                 </tr>

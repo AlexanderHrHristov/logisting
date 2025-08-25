@@ -36,7 +36,7 @@ urlpatterns = [
     # --- График за вземане ---
     path("pickup-schedule/", views.PickupScheduleListView.as_view(), name="pickup_schedule_list"),
     path("pickup-schedule/add/", views.PickupScheduleCreateView.as_view(), name="pickup_create"),
-    path("pickup-schedule/<int:pk>/edit/", views.PickupScheduleUpdateView.as_view(), name="pickup_update"),
+    path("pickup-schedule/<int:pk>/edit/", views.PickupScheduleUpdateView.as_view(), name="pickup_schedule_edit"),
     path("pickup-schedule/<int:pk>/delete/", views.PickupScheduleDeleteView.as_view(), name="pickup_delete"),
 ]
 

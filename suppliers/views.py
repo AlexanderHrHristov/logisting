@@ -269,7 +269,18 @@ class PickupScheduleCreateView(CreateView):
 class PickupScheduleUpdateView(UpdateView):
     model = PickupSchedule
     form_class = PickupScheduleForm
-    template_name = "suppliers/pickup_schedule.html"
+    template_name = "suppliers/pickup_schedule_form.html"
+
+    def get_object(self, queryset=None):
+        # Взимаме конкретния график по pk от URL
+        return PickupSchedule.objects.get(pk=self.kwargs['pk'])
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        supplier_id = self.object.supplier_id
+        context['schedule'] = PickupSchedule.objects.filter(supplier_id=supplier_id).order_by('date')
+        return context
+
 
     def get_success_url(self):
         return reverse_lazy("suppliers:pickup_schedule_list")
