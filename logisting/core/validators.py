@@ -73,3 +73,5 @@ def validate_vat_by_country(vat_number, country_name):
         raise ValidationError(
             f"Невалиден VAT номер за държава {country_name}."
         )
+        
+    
